@@ -22,7 +22,8 @@ class EncodeDecodeTest extends TestBase
         $this->expectFields($from);
 
         $data = $from->encode();
-        $this->assertSame(TestUtil::getGoldenTestMessage(), $data);
+        $this->assertSame(bin2hex(TestUtil::getGoldenTestMessage()),
+                          bin2hex($data));
     }
 
     public function testDecode()
@@ -132,4 +133,58 @@ class EncodeDecodeTest extends TestBase
         $to->decode(TestUtil::getGoldenTestUnpackedMessage());
         TestUtil::assertTestPackedMessage($to);
     }
+
+    public function testDecodeInt64()
+    {
+        // Read 64 testing
+        $testVals = array(
+            '10'                 => '100a',
+            '100'                => '1064',
+            '800'                => '10a006',
+            '6400'               => '108032',
+            '70400'              => '1080a604',
+            '774400'             => '1080a22f',
+            '9292800'            => '108098b704',
+            '74342400'           => '1080c0b923',
+            '743424000'          => '108080bfe202',
+            '8177664000'         => '108080b5bb1e',
+            '65421312000'        => '108080a8dbf301',
+            '785055744000'       => '108080e0c7ec16',
+            '9420668928000'      => '10808080dd969202',
+            '103627358208000'    => '10808080fff9c717',
+            '1139900940288000'   => '10808080f5bd978302',
+            '13678811283456000'  => '10808080fce699a618',
+            '109430490267648000' => '10808080e0b7ceb1c201',
+            '984874412408832000' => '10808080e0f5c1bed50d',
+        );
+
+        $msg = new TestMessage();
+        foreach ($testVals as $original => $encoded) {
+            $msg->setOptionalInt64($original);
+            $data = $msg->encode();
+            $this->assertSame($encoded, bin2hex($data));
+            $msg->setOptionalInt64(0);
+            $msg->decode($data);
+            $this->assertEquals($original, $msg->getOptionalInt64());
+        }
+    }
+
+    public function testDecodeFieldNonExist()
+    {
+        $data = hex2bin('c80501');
+        $m = new TestMessage();
+        $m->decode($data);
+    }
+
+    # TODO(teboring): Add test back when php implementation is ready for json
+    # encode/decode.
+    # public function testJsonEncode()
+    # {
+    #     $from = new TestMessage();
+    #     $this->setFields($from);
+    #     $data = $from->jsonEncode();
+    #     $to = new TestMessage();
+    #     $to->jsonDecode($data);
+    #     $this->expectFields($to);
+    # }
 }

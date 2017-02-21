@@ -30,6 +30,7 @@
 
 #include <php.h>
 #include <stdlib.h>
+#include <ext/json/php_json.h>
 
 #include "protobuf.h"
 
@@ -37,8 +38,11 @@ static zend_class_entry* message_type;
 zend_object_handlers* message_handlers;
 
 static  zend_function_entry message_methods[] = {
+  PHP_ME(Message, clear, NULL, ZEND_ACC_PUBLIC)
   PHP_ME(Message, encode, NULL, ZEND_ACC_PUBLIC)
   PHP_ME(Message, decode, NULL, ZEND_ACC_PUBLIC)
+  PHP_ME(Message, jsonEncode, NULL, ZEND_ACC_PUBLIC)
+  PHP_ME(Message, jsonDecode, NULL, ZEND_ACC_PUBLIC)
   PHP_ME(Message, readOneof, NULL, ZEND_ACC_PROTECTED)
   PHP_ME(Message, writeOneof, NULL, ZEND_ACC_PROTECTED)
   PHP_ME(Message, whichOneof, NULL, ZEND_ACC_PROTECTED)
@@ -54,6 +58,8 @@ static zval* message_get_property(zval* object, zval* member, int type,
                                   const zend_literal* key TSRMLS_DC);
 static zval** message_get_property_ptr_ptr(zval* object, zval* member, int type,
                                            const zend_literal* key TSRMLS_DC);
+static HashTable* message_get_properties(zval* object TSRMLS_DC);
+static HashTable* message_get_gc(zval* object, zval*** table, int* n TSRMLS_DC);
 
 static zend_object_value message_create(zend_class_entry* ce TSRMLS_DC);
 static void message_free(void* object TSRMLS_DC);
@@ -74,6 +80,8 @@ void message_init(TSRMLS_D) {
   message_handlers->write_property = message_set_property;
   message_handlers->read_property = message_get_property;
   message_handlers->get_property_ptr_ptr = message_get_property_ptr_ptr;
+  message_handlers->get_properties = message_get_properties;
+  message_handlers->get_gc = message_get_gc;
 }
 
 static void message_set_property(zval* object, zval* member, zval* value,
@@ -142,6 +150,17 @@ static zval* message_get_property(zval* object, zval* member, int type,
 static zval** message_get_property_ptr_ptr(zval* object, zval* member, int type,
                                            const zend_literal* key TSRMLS_DC) {
   return NULL;
+}
+
+static HashTable* message_get_properties(zval* object TSRMLS_DC) {
+  return NULL;
+}
+
+static HashTable* message_get_gc(zval* object, zval*** table, int* n TSRMLS_DC) {
+    zend_object* zobj = Z_OBJ_P(object);
+    *table = zobj->properties_table;
+    *n = zobj->ce->default_properties_count;
+    return NULL;
 }
 
 // -----------------------------------------------------------------------------
@@ -221,6 +240,24 @@ PHP_METHOD(Message, __construct) {
     zval_dtor(getThis());
     Z_OBJVAL_P(getThis()) = message_create(ce TSRMLS_CC);
   }
+}
+
+PHP_METHOD(Message, clear) {
+  MessageHeader* msg =
+      (MessageHeader*)zend_object_store_get_object(getThis() TSRMLS_CC);
+  Descriptor* desc = msg->descriptor;
+  zend_class_entry* ce = desc->klass;
+  int i;
+
+  for (i = 0; i < msg->std.ce->default_properties_count; i++) {
+    zval_ptr_dtor(&msg->std.properties_table[i]);
+  }
+  efree(msg->std.properties_table);
+
+  zend_object_std_init(&msg->std, ce TSRMLS_CC);
+  object_properties_init(&msg->std, ce);
+  layout_init(desc->layout, message_data(msg),
+              msg->std.properties_table TSRMLS_CC);
 }
 
 PHP_METHOD(Message, readOneof) {

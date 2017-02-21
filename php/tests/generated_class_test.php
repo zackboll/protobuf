@@ -1,6 +1,8 @@
 <?php
 
-require_once('generated/NoNameSpace.php');
+require_once('generated/NoNameSpaceEnum.php');
+require_once('generated/NoNameSpaceMessage.php');
+require_once('test_base.php');
 require_once('test_util.php');
 
 use Google\Protobuf\Internal\RepeatedField;
@@ -9,7 +11,7 @@ use Foo\TestEnum;
 use Foo\TestMessage;
 use Foo\TestMessage_Sub;
 
-class GeneratedClassTest extends PHPUnit_Framework_TestCase
+class GeneratedClassTest extends TestBase
 {
 
     #########################################################
@@ -607,10 +609,29 @@ class GeneratedClassTest extends PHPUnit_Framework_TestCase
     }
 
     #########################################################
-    # Test oneof field.
+    # Test clear method.
     #########################################################
 
-    public function testMessageWithoutNamespace() {
-      $m = new NoNameSpace();
+    public function testMessageClear()
+    {
+        $m = new TestMessage();
+        $this->setFields($m);
+        $this->expectFields($m);
+        $m->clear();
+        $this->expectEmptyFields($m);
+    }
+
+    #########################################################
+    # Test message/enum without namespace.
+    #########################################################
+
+    public function testMessageWithoutNamespace()
+    {
+        $m = new NoNameSpaceMessage();
+    }
+
+    public function testEnumWithoutNamespace()
+    {
+        $m = new NoNameSpaceEnum();
     }
 }

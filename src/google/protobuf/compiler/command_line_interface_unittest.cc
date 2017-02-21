@@ -101,6 +101,7 @@ class CommandLineInterfaceTest : public testing::Test {
   // command is automatically split on spaces, and the string "$tmpdir"
   // is replaced with TestTempDir().
   void Run(const string& command);
+  void RunWithArgs(vector<string> args);
 
   // -----------------------------------------------------------------
   // Methods to set up the test (called before Run()).
@@ -292,8 +293,10 @@ void CommandLineInterfaceTest::TearDown() {
 }
 
 void CommandLineInterfaceTest::Run(const string& command) {
-  std::vector<string> args = Split(command, " ", true);
+  RunWithArgs(Split(command, " ", true));
+}
 
+void CommandLineInterfaceTest::RunWithArgs(vector<string> args) {
   if (!disallow_plugins_) {
     cli_.AllowPlugins("prefix-");
 #ifndef GOOGLE_THIRD_PARTY_PROTOBUF
@@ -686,10 +689,36 @@ TEST_F(CommandLineInterfaceTest, UnrecognizedExtraParameters) {
     "message Foo {}\n");
 
   Run("protocol_compiler --plug_out=TestParameter:$tmpdir "
+      "--unknown_plug_a_opt=Foo "
+      "--unknown_plug_b_opt=Bar "
+      "--proto_path=$tmpdir foo.proto");
+
+  ExpectErrorSubstring("Unknown flag: --unknown_plug_a_opt");
+  ExpectErrorSubstring("Unknown flag: --unknown_plug_b_opt");
+}
+
+TEST_F(CommandLineInterfaceTest, ExtraPluginParametersForOutParameters) {
+  // This doesn't rely on the plugin having been registred and instead that
+  // the existence of --[name]_out is enough to make the --[name]_opt valid.
+  // However, running out of process plugins found via the search path (i.e. -
+  // not pre registered with --plugin) isn't support in this test suite, so we
+  // list the options pre/post the _out directive, and then include _opt that
+  // will be unknown, and confirm the failure output is about the expected
+  // unknown directive, which means the other were accepted.
+  // NOTE: UnrecognizedExtraParameters confirms that if two unknown _opt
+  // directives appear, they both are reported.
+
+  CreateTempFile("foo.proto",
+    "syntax = \"proto2\";\n"
+    "message Foo {}\n");
+
+  Run("protocol_compiler --plug_out=TestParameter:$tmpdir "
+      "--xyz_opt=foo=bar --xyz_out=$tmpdir "
+      "--abc_out=$tmpdir --abc_opt=foo=bar "
       "--unknown_plug_opt=Foo "
       "--proto_path=$tmpdir foo.proto");
 
-  ExpectErrorSubstring("Unknown flag: --unknown_plug_opt");
+  ExpectErrorText("Unknown flag: --unknown_plug_opt\n");
 }
 
 TEST_F(CommandLineInterfaceTest, Insert) {
@@ -996,6 +1025,27 @@ TEST_F(CommandLineInterfaceTest, DirectDependencies_ProvidedMultipleTimes) {
       "':'.\n");
 }
 
+TEST_F(CommandLineInterfaceTest, DirectDependencies_CustomErrorMessage) {
+  CreateTempFile("foo.proto",
+                 "syntax = \"proto2\";\n"
+                 "import \"bar.proto\";\n"
+                 "message Foo { optional Bar bar = 1; }");
+  CreateTempFile("bar.proto",
+                 "syntax = \"proto2\";\n"
+                 "message Bar { optional string text = 1; }");
+
+  vector<string> commands;
+  commands.push_back("protocol_compiler");
+  commands.push_back("--test_out=$tmpdir");
+  commands.push_back("--proto_path=$tmpdir");
+  commands.push_back("--direct_dependencies=");
+  commands.push_back("--direct_dependencies_violation_msg=Bla \"%s\" Bla");
+  commands.push_back("foo.proto");
+  RunWithArgs(commands);
+
+  ExpectErrorText("foo.proto: Bla \"bar.proto\" Bla\n");
+}
+
 TEST_F(CommandLineInterfaceTest, CwdRelativeInputs) {
   // Test that we can accept working-directory-relative input files.
 
@@ -1281,6 +1331,19 @@ TEST_F(CommandLineInterfaceTest, ParseErrorsMultipleFiles) {
     "baz.proto: Import \"bar.proto\" was not found or had errors.\n"
     "foo.proto: Import \"bar.proto\" was not found or had errors.\n"
     "foo.proto: Import \"baz.proto\" was not found or had errors.\n");
+}
+
+TEST_F(CommandLineInterfaceTest, RecursiveImportFails) {
+  // Create a proto file that imports itself.
+  CreateTempFile("foo.proto",
+    "syntax = \"proto2\";\n"
+    "import \"foo.proto\";\n");
+
+  Run("protocol_compiler --test_out=$tmpdir "
+      "--proto_path=$tmpdir foo.proto");
+
+  ExpectErrorSubstring(
+    "foo.proto: File recursively imports itself: foo.proto -> foo.proto\n");
 }
 
 TEST_F(CommandLineInterfaceTest, InputNotFoundError) {

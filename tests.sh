@@ -63,7 +63,7 @@ build_cpp_distcheck() {
   # List all files that should be included in the distribution package.
   git ls-files | grep "^\(java\|python\|objectivec\|csharp\|js\|ruby\|php\|cmake\|examples\)" |\
     grep -v ".gitignore" | grep -v "java/compatibility_tests" |\
-    grep -v "python/compatibility_tests" > dist.lst
+    grep -v "python/compatibility_tests" | grep -v "csharp/compatibility_tests" > dist.lst
   # Unzip the dist tar file.
   DIST=`ls *.tar.gz`
   tar -xf $DIST
@@ -119,6 +119,9 @@ build_csharp() {
   (cd csharp/src; dotnet restore)
   csharp/buildall.sh
   cd conformance && make test_csharp && cd ..
+
+  # Run csharp compatibility test between 3.0.0 and the current version.
+  csharp/compatibility_tests/v3.0.0/test.sh 3.0.0
 }
 
 build_golang() {
@@ -405,17 +408,27 @@ build_php5.5() {
   cp -r /usr/local/vendor-5.5 vendor
   ./vendor/bin/phpunit
   popd
+  pushd conformance
+  # TODO(teboring): Add it back
+  # make test_php
+  popd
 }
 
 build_php5.5_c() {
   use_php 5.5
   cd php/tests && /bin/bash ./test.sh && cd ../..
+  pushd conformance
+  make test_php_c
+  popd
 }
 
 build_php5.5_zts_c() {
   use_php_zts 5.5
   wget https://phar.phpunit.de/phpunit-old.phar -O /usr/bin/phpunit
   cd php/tests && /bin/bash ./test.sh && cd ../..
+  pushd conformance
+  make test_php_c
+  popd
 }
 
 build_php5.5_32() {
@@ -425,12 +438,20 @@ build_php5.5_32() {
   cp -r /usr/local/vendor-5.5 vendor
   ./vendor/bin/phpunit
   popd
+  # TODO(teboring): Add conformance test.
+  # pushd conformance
+  # make test_php
+  # popd
 }
 
 build_php5.5_c_32() {
   use_php_bc 5.5
   wget https://phar.phpunit.de/phpunit-old.phar -O /usr/bin/phpunit
   cd php/tests && /bin/bash ./test.sh && cd ../..
+  # TODO(teboring): Add conformance test.
+  # pushd conformance
+  # make test_php_c
+  # popd
 }
 
 build_php5.6() {
@@ -440,11 +461,18 @@ build_php5.6() {
   cp -r /usr/local/vendor-5.6 vendor
   ./vendor/bin/phpunit
   popd
+  pushd conformance
+  # TODO(teboring): Add it back
+  # make test_php
+  popd
 }
 
 build_php5.6_c() {
   use_php 5.6
   cd php/tests && /bin/bash ./test.sh && cd ../..
+  pushd conformance
+  make test_php_c
+  popd
 }
 
 build_php5.6_mac() {
@@ -455,7 +483,7 @@ build_php5.6_mac() {
   export PATH="$PHP_FOLDER/bin:$PATH"
 
   # Install phpunit
-  curl https://phar.phpunit.de/phpunit.phar -L -o phpunit.phar
+  curl https://phar.phpunit.de/phpunit-5.6.10.phar -L -o phpunit.phar
   chmod +x phpunit.phar
   sudo mv phpunit.phar /usr/local/bin/phpunit
 
@@ -466,6 +494,9 @@ build_php5.6_mac() {
 
   # Test
   cd php/tests && /bin/bash ./test.sh && cd ../..
+  pushd conformance
+  make test_php_c
+  popd
 }
 
 build_php7.0() {
@@ -475,11 +506,18 @@ build_php7.0() {
   cp -r /usr/local/vendor-7.0 vendor
   ./vendor/bin/phpunit
   popd
+  pushd conformance
+  # TODO(teboring): Add it back
+  # make test_php
+  popd
 }
 
 build_php7.0_c() {
   use_php 7.0
   cd php/tests && /bin/bash ./test.sh && cd ../..
+  pushd conformance
+  make test_php_c
+  popd
 }
 
 build_php_all() {
