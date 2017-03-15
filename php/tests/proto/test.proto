@@ -90,6 +90,7 @@ message TestMessage {
 
   message Sub {
     int32 a = 1;
+    repeated int32 b = 2;
   }
 
   // Reserved for non-existing field test.
@@ -99,6 +100,7 @@ message TestMessage {
 enum TestEnum {
   ZERO = 0;
   ONE  = 1;
+  TWO  = 2;
 }
 
 message TestPackedMessage {

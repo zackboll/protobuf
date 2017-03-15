@@ -434,7 +434,7 @@ static void map_slot_key(upb_fieldtype_t type, const void* from,
 }
 
 static void map_slot_value(upb_fieldtype_t type, const void* from,
-			   upb_value* v) {
+                           upb_value* v) {
   size_t len;
   void* to = upb_value_memory(v);
 #ifndef NDEBUG
@@ -1234,7 +1234,7 @@ static const upb_handlers* msgdef_json_serialize_handlers(
 // PHP encode/decode methods
 // -----------------------------------------------------------------------------
 
-PHP_METHOD(Message, encode) {
+PHP_METHOD(Message, serializeToString) {
   zval* php_descriptor = get_ce_obj(Z_OBJCE_P(getThis()));
   Descriptor* desc =
       (Descriptor*)zend_object_store_get_object(php_descriptor TSRMLS_CC);
@@ -1260,7 +1260,7 @@ PHP_METHOD(Message, encode) {
   }
 }
 
-PHP_METHOD(Message, decode) {
+PHP_METHOD(Message, mergeFromString) {
   zval* php_descriptor = get_ce_obj(Z_OBJCE_P(getThis()));
   Descriptor* desc =
       (Descriptor*)zend_object_store_get_object(php_descriptor TSRMLS_CC);

@@ -491,15 +491,85 @@ class Message
     }
 
     /**
+     * Merges the contents of the specified message into current message.
+     *
+     * This method merges the contents of the specified message into the
+     * current message. Singular fields that are set in the specified message
+     * overwrite the corresponding fields in the current message.  Repeated
+     * fields are appended. Map fields key-value pairs are overritten.
+     * Singular/Oneof sub-messages are recursively merged. All overritten
+     * sub-messages are deep-copied.
+     *
+     * @param object $msg Protobuf message to be merged from.
+     * @return null.
+     */
+    public function mergeFrom($msg)
+    {
+      if (get_class($this) !== get_class($msg)) {
+          user_error("Cannot merge messages with different class.");
+          return;
+      }
+
+      foreach ($this->desc->getField() as $field) {
+          $setter = $field->getSetter();
+          $getter = $field->getGetter();
+          if ($field->isMap()) {
+              if (count($msg->$getter()) != 0) {
+                  $value_field = $field->getMessageType()->getFieldByNumber(2);
+                  foreach ($msg->$getter() as $key => $value) {
+                      if ($value_field->getType() == GPBType::MESSAGE) {
+                          $klass = $value_field->getMessageType()->getClass();
+                          $copy = new $klass;
+                          $copy->mergeFrom($value);
+                          $this->$getter()[$key] = $copy;
+                      } else {
+                          $this->$getter()[$key] = $value;
+                      }
+                  }
+              }
+          } else if ($field->getLabel() === GPBLabel::REPEATED) {
+              if (count($msg->$getter()) != 0) {
+                  foreach ($msg->$getter() as $tmp) {
+                      if ($field->getType() == GPBType::MESSAGE) {
+                          $klass = $field->getMessageType()->getClass();
+                          $copy = new $klass;
+                          $copy->mergeFrom($tmp);
+                          $this->$getter()[] = $copy;
+                      } else {
+                          $this->$getter()[] = $tmp;
+                      }
+                  }
+              }
+          } else if ($field->getLabel() === GPBLabel::OPTIONAL) {
+              if($msg->$getter() !== $this->defaultValue($field)) {
+                  $tmp = $msg->$getter();
+                  if ($field->getType() == GPBType::MESSAGE) {
+                      if (is_null($this->$getter())) {
+                          $klass = $field->getMessageType()->getClass();
+                          $new_msg = new $klass;
+                          $this->$setter($new_msg);
+                      }
+                      $this->$getter()->mergeFrom($tmp);
+                  } else {
+                      $this->$setter($tmp);
+                  }
+              }
+          }
+      }
+    }
+
+    /**
      * Parses a protocol buffer contained in a string.
      *
      * This function takes a string in the (non-human-readable) binary wire
-     * format, matching the encoding output by encode().
+     * format, matching the encoding output by serializeToString().
+     * See mergeFrom() for merging behavior, if the field is already set in the
+     * specified message.
      *
      * @param string $data Binary protobuf data.
      * @return bool Return true on success.
      */
-    public function decode($data)
+    public function mergeFromString($data)
     {
         $input = new InputStream($data);
         $this->parseFromStream($input);
@@ -646,7 +716,7 @@ class Message
      * Serialize the message to string.
      * @return string Serialized binary protobuf data.
      */
-    public function encode()
+    public function serializeToString()
     {
         $output = new OutputStream($this->byteSize());
         $this->serializeToStream($output);
