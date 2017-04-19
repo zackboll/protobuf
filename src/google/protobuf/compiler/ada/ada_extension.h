@@ -30,42 +30,56 @@
 // Author: zackboll@gmail.com (Zack Boll)
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, and others.
-//
-// Generates Ada code for a given .proto file.
 
-#ifndef GOOGLE_PROTOBUF_COMPILER_ADA_GENERATOR_H__
-#define GOOGLE_PROTOBUF_COMPILER_ADA_GENERATOR_H__
+#ifndef GOOGLE_PROTOBUF_COMPILER_ADA_EXTENSION_H__
+#define GOOGLE_PROTOBUF_COMPILER_ADA_EXTENSION_H__
 
 #include <string>
-#include <google/protobuf/compiler/code_generator.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/compiler/ada/ada_options.h>
 
 namespace google {
+namespace protobuf {
+  class FieldDescriptor;       // descriptor.h
+  namespace io {
+    class Printer;             // printer.h
+  }
+}
+
 namespace protobuf {
 namespace compiler {
 namespace ada {
 
-// CodeGenerator implementation which generates a Ada source file and
-// header.  If you create your own protocol compiler binary and you want
-// it to support Ada output, you can do so by registering an instance of this
-// CodeGenerator with the CommandLineInterface in your main() function.
-class LIBPROTOC_EXPORT AdaGenerator : public CodeGenerator {
+// Generates code for an extension, which may be within the scope of some
+// message or may be at file scope.  This is much simpler than FieldGenerator
+// since extensions are just simple identifiers with interesting types.
+class ExtensionGenerator {
  public:
-  AdaGenerator();
-  ~AdaGenerator();
-  
-  // implements CodeGenerator
-  bool Generate(const FileDescriptor* file,
-                const string& parameter,
-                GeneratorContext* generator_context,
-                string* error) const;
+  // See generator.cc for the meaning of dllexport_decl.
+  explicit ExtensionGenerator(const FieldDescriptor* descriptor,
+                              const Options& options);
+  ~ExtensionGenerator();
+
+  // Header stuff.
+  void GenerateDeclaration(io::Printer* printer);
+
+  // Source file stuff.
+  void GenerateDefinition(io::Printer* printer);
+
+  // Generate code to register the extension.
+  void GenerateRegistration(io::Printer* printer);
 
  private:
-  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(AdaGenerator);
+  const FieldDescriptor* descriptor_;
+  string type_traits_;
+  Options options_;
 
-} // namespace ada
-} // namespace compiler
-} // namespace protobuf
+  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(ExtensionGenerator);
+};
 
-} // namespace google
+}  // namespace ada
+}  // namespace compiler
+}  // namespace protobuf
 
-#endif  // GOOGLE_PROTOBUF_COMPILER_ADA_GENERATOR_H__
+}  // namespace google
+#endif  // GOOGLE_PROTOBUF_COMPILER_ADA_MESSAGE_H__

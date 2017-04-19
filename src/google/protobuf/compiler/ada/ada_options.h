@@ -30,42 +30,44 @@
 // Author: zackboll@gmail.com (Zack Boll)
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, and others.
-//
-// Generates Ada code for a given .proto file.
 
-#ifndef GOOGLE_PROTOBUF_COMPILER_ADA_GENERATOR_H__
-#define GOOGLE_PROTOBUF_COMPILER_ADA_GENERATOR_H__
+#ifndef GOOGLE_PROTOBUF_COMPILER_ADA_OPTIONS_H__
+#define GOOGLE_PROTOBUF_COMPILER_ADA_OPTIONS_H__
 
 #include <string>
-#include <google/protobuf/compiler/code_generator.h>
 
+#include <google/protobuf/stubs/common.h>
 namespace google {
 namespace protobuf {
 namespace compiler {
 namespace ada {
 
-// CodeGenerator implementation which generates a Ada source file and
-// header.  If you create your own protocol compiler binary and you want
-// it to support Ada output, you can do so by registering an instance of this
-// CodeGenerator with the CommandLineInterface in your main() function.
-class LIBPROTOC_EXPORT AdaGenerator : public CodeGenerator {
- public:
-  AdaGenerator();
-  ~AdaGenerator();
-  
-  // implements CodeGenerator
-  bool Generate(const FileDescriptor* file,
-                const string& parameter,
-                GeneratorContext* generator_context,
-                string* error) const;
+// :TODO: (zackboll) need to investigate if these options are 
+// applicate to Ada implementation or whether additional options
+// should be defined
+// Generator options (see generator.cc for a description of each):
 
- private:
-  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(AdaGenerator);
+struct Options {
+  Options()
+     : safe_boundary_check(false),
+       proto_h(false),
+       allow_import_public(true),
+       annotate_headers(false),
+       enforce_lite(false) {}
 
-} // namespace ada
-} // namespace compiler
-} // namespace protobuf
+  string dllexport_decl;
+  bool safe_boundary_check;
+  bool proto_h;
+  bool allow_import_public;
+  bool annotate_headers;
+  bool enforce_lite;
+  string annotation_pragma_name;
+  string annotation_gaurd_name;
+};
 
-} // namespace google
+}  // namespace ada
+}  // namespace compiler
+}  // namespace protobuf
 
-#endif  // GOOGLE_PROTOBUF_COMPILER_ADA_GENERATOR_H__
+}  // namespace google
+#endif  // GOOGLE_PROTOBUF_COMPILER_ADA_OPTIONS_H__

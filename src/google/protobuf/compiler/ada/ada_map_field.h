@@ -30,42 +30,55 @@
 // Author: zackboll@gmail.com (Zack Boll)
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, and others.
-//
-// Generates Ada code for a given .proto file.
 
-#ifndef GOOGLE_PROTOBUF_COMPILER_ADA_GENERATOR_H__
-#define GOOGLE_PROTOBUF_COMPILER_ADA_GENERATOR_H__
+#ifndef GOOGLE_PROTOBUF_COMPILER_ADA_MAP_FIELD_H__
+#define GOOGLE_PROTOBUF_COMPILER_ADA_MAP_FIELD_H__
 
+#include <map>
 #include <string>
-#include <google/protobuf/compiler/code_generator.h>
+
+#include <google/protobuf/compiler/ada/ada_message_field.h>
 
 namespace google {
 namespace protobuf {
 namespace compiler {
 namespace ada {
 
-// CodeGenerator implementation which generates a Ada source file and
-// header.  If you create your own protocol compiler binary and you want
-// it to support Ada output, you can do so by registering an instance of this
-// CodeGenerator with the CommandLineInterface in your main() function.
-class LIBPROTOC_EXPORT AdaGenerator : public CodeGenerator {
+class MapFieldGenerator : public FieldGenerator {
  public:
-  AdaGenerator();
-  ~AdaGenerator();
-  
-  // implements CodeGenerator
-  bool Generate(const FileDescriptor* file,
-                const string& parameter,
-                GeneratorContext* generator_context,
-                string* error) const;
+  MapFieldGenerator(const FieldDescriptor* descriptor, const Options& options);
+  ~MapFieldGenerator();
+
+  // implements FieldGenerator ---------------------------------------
+  void GeneratePrivateMembers(io::Printer* printer) const;
+  void GenerateAccessorDeclarations(io::Printer* printer) const;
+  void GenerateInlineAccessorDefinitions(io::Printer* printer,
+                                         bool is_inline) const;
+  void GenerateClearingCode(io::Printer* printer) const;
+  void GenerateMergingCode(io::Printer* printer) const;
+  void GenerateSwappingCode(io::Printer* printer) const;
+  void GenerateConstructorCode(io::Printer* printer) const;
+  void GenerateCopyConstructorCode(io::Printer* printer) const;
+  void GenerateMergeFromCodedStream(io::Printer* printer) const;
+  void GenerateSerializeWithCachedSizes(io::Printer* printer) const;
+  void GenerateSerializeWithCachedSizesToArray(io::Printer* printer) const;
+  void GenerateByteSize(io::Printer* printer) const;
 
  private:
-  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(AdaGenerator);
+  // A helper for GenerateSerializeWithCachedSizes{,ToArray}.
+  void GenerateSerializeWithCachedSizes(
+      io::Printer* printer, const std::map<string, string>& variables) const;
 
-} // namespace ada
-} // namespace compiler
-} // namespace protobuf
+  const FieldDescriptor* descriptor_;
+  const bool dependent_field_;
+  std::map<string, string> variables_;
 
-} // namespace google
+  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(MapFieldGenerator);
+};
 
-#endif  // GOOGLE_PROTOBUF_COMPILER_ADA_GENERATOR_H__
+}  // namespace ada
+}  // namespace compiler
+}  // namespace protobuf
+
+}  // namespace google
+#endif  // GOOGLE_PROTOBUF_COMPILER_ADA_MAP_FIELD_H__
