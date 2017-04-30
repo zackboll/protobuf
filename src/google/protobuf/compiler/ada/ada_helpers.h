@@ -176,26 +176,44 @@ inline bool HasFastArraySerialization(const FileDescriptor* file,
   return GetOptimizeFor(file, options) == FileOptions::SPEED;
 }
 
+// Returns whether we have to generate code with static initializers.
+bool StaticInitializersForced(const FileDescriptor* file,
+                              const Options& options);
+
+
+inline bool IsMapEntryMessage(const Descriptor* descriptor) {
+  return descriptor->options().map_entry();
+}
+
+// Returns true if the field's CPPTYPE is string or message.
+bool IsStringOrMessage(const FieldDescriptor* field);
+
+// For a string field, returns the effective ctype.  If the actual ctype is
+// not supported, returns the default of STRING.
+FieldOptions::CType EffectiveStringCType(const FieldDescriptor* field);
 
 string UnderscoresToCamelCase(const string& input, bool cap_next_letter);
 
 inline bool HasFieldPresence(const FileDescriptor* file) {
-  return google::protobuf::compiler::cpp::HasFieldPresence (file);
+  return file->syntax() != FileDescriptor::SYNTAX_PROTO3;
 }
 
 // Returns true if 'enum' semantics are such that unknown values are preserved
 // in the enum field itself, rather than going to the UnknownFieldSet.
 inline bool HasPreservingUnknownEnumSemantics(const FileDescriptor* file) {
-  return google::protobuf::compiler::cpp::
-    HasPreservingUnknownEnumSemantics (file);
+  return file->syntax() == FileDescriptor::SYNTAX_PROTO3;
 }
 
 inline bool SupportsArenas(const FileDescriptor* file) {
-  return google::protobuf::compiler::cpp::SupportsArenas (file);
+  return file->options().cc_enable_arenas();
 }
 
 inline bool SupportsArenas(const Descriptor* desc) {
-  return google::protobuf::compiler::cpp::SupportsArenas (desc);
+  return SupportsArenas(desc->file());
+}
+
+inline bool SupportsArenas(const FieldDescriptor* field) {
+  return SupportsArenas(field->file());
 }
 
 bool IsAnyMessage(const FileDescriptor* descriptor);

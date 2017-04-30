@@ -27,7 +27,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 // Generates Ada code for a given .proto file.
 
 #include <google/protobuf/compiler/ada/ada_generator.h>
@@ -38,6 +37,12 @@
 #include <google/protobuf/stubs/shared_ptr.h>
 #endif
 #include <utility>
+
+#include <google/protobuf/compiler/ada/ada_file.h>
+#include <google/protobuf/compiler/ada/ada_helpers.h>
+#include <google/protobuf/io/printer.h>
+#include <google/protobuf/io/zero_copy_stream.h>
+#include <google/protobuf/descriptor.pb.h>
 
 namespace google {
 namespace protobuf {

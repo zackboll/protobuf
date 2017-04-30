@@ -264,6 +264,11 @@ GenerateConstructorCode(io::Printer* printer) const {
 }
 
 void StringOneofFieldGenerator::
+GenerateDestructorCode(io::Printer* printer) const {
+  printer->Print("--TODO: StringOneofFieldGenerator::GenerateDestructorCode\n");
+}
+
+void StringOneofFieldGenerator::
 GenerateMergeFromCodedStream(io::Printer* printer) const {
   printer->Print("--TODO: StringOneofFieldGenerator::GenerateMergeFromCodedStream\n");
 }

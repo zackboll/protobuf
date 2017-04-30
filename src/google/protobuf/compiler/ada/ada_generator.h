@@ -57,11 +57,11 @@ class LIBPROTOC_EXPORT AdaGenerator : public CodeGenerator {
 
  private:
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(AdaGenerator);
+};
 
 } // namespace ada
 } // namespace compiler
 } // namespace protobuf
 
 } // namespace google
-
 #endif  // GOOGLE_PROTOBUF_COMPILER_ADA_GENERATOR_H__

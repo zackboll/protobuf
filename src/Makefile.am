@@ -155,6 +155,7 @@ nobase_include_HEADERS =                                         \
   google/protobuf/compiler/parser.h                              \
   google/protobuf/compiler/plugin.h                              \
   google/protobuf/compiler/plugin.pb.h                           \
+  google/protobuf/compiler/ada/ada_generator.h                   \
   google/protobuf/compiler/cpp/cpp_generator.h                   \
   google/protobuf/compiler/csharp/csharp_generator.h             \
   google/protobuf/compiler/csharp/csharp_names.h                 \
@@ -328,6 +329,32 @@ libprotoc_la_SOURCES =                                         \
   google/protobuf/compiler/subprocess.h                        \
   google/protobuf/compiler/zip_writer.cc                       \
   google/protobuf/compiler/zip_writer.h                        \
+  google/protobuf/compiler/ada/ada_enum.cc                     \
+  google/protobuf/compiler/ada/ada_enum.h                      \
+  google/protobuf/compiler/ada/ada_enum_field.cc               \
+  google/protobuf/compiler/ada/ada_enum_field.h                \
+  google/protobuf/compiler/ada/ada_extension.cc                \
+  google/protobuf/compiler/ada/ada_extension.h                 \
+  google/protobuf/compiler/ada/ada_field.cc                    \
+  google/protobuf/compiler/ada/ada_field.h                     \
+  google/protobuf/compiler/ada/ada_file.cc                     \
+  google/protobuf/compiler/ada/ada_file.h                      \
+  google/protobuf/compiler/ada/ada_generator.cc                \
+  google/protobuf/compiler/ada/ada_helpers.cc                  \
+  google/protobuf/compiler/ada/ada_helpers.h                   \
+  google/protobuf/compiler/ada/ada_map_field.cc                \
+  google/protobuf/compiler/ada/ada_map_field.h                 \
+  google/protobuf/compiler/ada/ada_message.cc                  \
+  google/protobuf/compiler/ada/ada_message.h                   \
+  google/protobuf/compiler/ada/ada_message_field.cc            \
+  google/protobuf/compiler/ada/ada_message_field.h             \
+  google/protobuf/compiler/ada/ada_options.h                   \
+  google/protobuf/compiler/ada/ada_primitive_field.cc          \
+  google/protobuf/compiler/ada/ada_primitive_field.h           \
+  google/protobuf/compiler/ada/ada_service.cc                  \
+  google/protobuf/compiler/ada/ada_service.h                   \
+  google/protobuf/compiler/ada/ada_string_field.cc             \
+  google/protobuf/compiler/ada/ada_string_field.h              \  
   google/protobuf/compiler/cpp/cpp_enum.cc                     \
   google/protobuf/compiler/cpp/cpp_enum.h                      \
   google/protobuf/compiler/cpp/cpp_enum_field.cc               \
