@@ -27,10 +27,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Author: zackboll@gmail.com (Zack Boll)
-//  Based on original Protocol Buffers design by
-//  Sanjay Ghemawat, Jeff Dean, and others.
-
 #include <map>
 
 #include <google/protobuf/compiler/ada/ada_enum.h>
@@ -142,19 +138,19 @@ void EnumGenerator::GenerateDefinition(io::Printer* printer) {
 
 void EnumGenerator::
 GenerateGetEnumDescriptorSpecializations(io::Printer* printer) {
-  printer->Print("--TODO: EnumGenerator::GenerateGetEnumDescriptorSpecializations");
+  printer->Print("--TODO: EnumGenerator::GenerateGetEnumDescriptorSpecializations\n");
 }
 
 void EnumGenerator::GenerateSymbolImports(io::Printer* printer) {
-  printer->Print("--TODO: EnumGenerator::GenerateSymbolImports");
+  printer->Print("--TODO: EnumGenerator::GenerateSymbolImports\n");
 }
 
 void EnumGenerator::GenerateDescriptorInitializer(io::Printer* printer) {
-  printer->Print("--TODO: EnumGenerator::GenerateDescriptorInitializer");
+  printer->Print("--TODO: EnumGenerator::GenerateDescriptorInitializer\n");
 }
 
 void EnumGenerator::GenerateMethods(io::Printer* printer) {
-  printer->Print("--TODO: EnumGenerator::GenerateMethods");
+  printer->Print("--TODO: EnumGenerator::GenerateMethods\n");
 }
 
 }  // namespace ada

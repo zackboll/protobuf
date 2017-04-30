@@ -27,10 +27,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Author: zackboll@gmail.com (Zack Boll)
-//  Based on original Protocol Buffers design by
-//  Sanjay Ghemawat, Jeff Dean, and others.
-
 #include <google/protobuf/compiler/ada/ada_primitive_field.h>
 #include <google/protobuf/compiler/ada/ada_helpers.h>
 #include <google/protobuf/io/printer.h>
@@ -112,62 +108,62 @@ PrimitiveFieldGenerator::~PrimitiveFieldGenerator() {}
 
 void PrimitiveFieldGenerator::
 GeneratePrivateMembers(io::Printer* printer) const {
-  printer->Print("--TODO: PrimitiveFieldGenerator::GeneratePrivateMembers");
+  printer->Print("--TODO: PrimitiveFieldGenerator::GeneratePrivateMembers\n");
 }
 
 void PrimitiveFieldGenerator::
 GenerateAccessorDeclarations(io::Printer* printer) const {
-  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateAccessorDeclarations");
+  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateAccessorDeclarations\n");
 }
 
 void PrimitiveFieldGenerator::
 GenerateInlineAccessorDefinitions(io::Printer* printer, bool is_inline) const {
-  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateInlineAccessorDefinitions");
+  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateInlineAccessorDefinitions\n");
 }
 
 void PrimitiveFieldGenerator::
 GenerateClearingCode(io::Printer* printer) const {
-  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateClearingCode");
+  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateClearingCode\n");
 }
 
 void PrimitiveFieldGenerator::
 GenerateMergingCode(io::Printer* printer) const {
-  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateMergingCode");
+  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateMergingCode\n");
 }
 
 void PrimitiveFieldGenerator::
 GenerateSwappingCode(io::Printer* printer) const {
-  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateSwappingCode");
+  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateSwappingCode\n");
 }
 
 void PrimitiveFieldGenerator::
 GenerateConstructorCode(io::Printer* printer) const {
-  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateConstructorCode");
+  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateConstructorCode\n");
 }
 
 void PrimitiveFieldGenerator::
 GenerateCopyConstructorCode(io::Printer* printer) const {
-  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateCopyConstructorCode");
+  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateCopyConstructorCode\n");
 }
 
 void PrimitiveFieldGenerator::
 GenerateMergeFromCodedStream(io::Printer* printer) const {
-  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateMergeFromCodedStream");
+  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateMergeFromCodedStream\n");
 }
 
 void PrimitiveFieldGenerator::
 GenerateSerializeWithCachedSizes(io::Printer* printer) const {
-  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateSerializeWithCachedSizes");
+  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateSerializeWithCachedSizes\n");
 }
 
 void PrimitiveFieldGenerator::
 GenerateSerializeWithCachedSizesToArray(io::Printer* printer) const {
-  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateSerializeWithCachedSizesToArray");
+  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateSerializeWithCachedSizesToArray\n");
 }
 
 void PrimitiveFieldGenerator::
 GenerateByteSize(io::Printer* printer) const {
-  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateByteSize");
+  printer->Print("--TODO: PrimitiveFieldGenerator::GenerateByteSize\n");
 }
 
 // ===================================================================
@@ -183,12 +179,12 @@ PrimitiveOneofFieldGenerator::~PrimitiveOneofFieldGenerator() {}
 
 void PrimitiveOneofFieldGenerator::
 GenerateInlineAccessorDefinitions(io::Printer* printer, bool is_inline) const {
-  printer->Print("--TODO: PrimitiveOneofFieldGenerator::GenerateInlineAccessorDefinitions");
+  printer->Print("--TODO: PrimitiveOneofFieldGenerator::GenerateInlineAccessorDefinitions\n");
 }
 
 void PrimitiveOneofFieldGenerator::
 GenerateClearingCode(io::Printer* printer) const {
-  printer->Print("--TODO: PrimitiveOneofFieldGenerator::GenerateClearingCode");
+  printer->Print("--TODO: PrimitiveOneofFieldGenerator::GenerateClearingCode\n");
 }
 
 void PrimitiveOneofFieldGenerator::
@@ -198,12 +194,12 @@ GenerateSwappingCode(io::Printer* printer) const {
 
 void PrimitiveOneofFieldGenerator::
 GenerateConstructorCode(io::Printer* printer) const {
-  printer->Print("--TODO: PrimitiveOneofFieldGenerator::GenerateConstructorCode");
+  printer->Print("--TODO: PrimitiveOneofFieldGenerator::GenerateConstructorCode\n");
 }
 
 void PrimitiveOneofFieldGenerator::
 GenerateMergeFromCodedStream(io::Printer* printer) const {
-  printer->Print("--TODO: PrimitiveOneofFieldGenerator::GenerateMergeFromCodedStream");
+  printer->Print("--TODO: PrimitiveOneofFieldGenerator::GenerateMergeFromCodedStream\n");
 }
 
 // ===================================================================
@@ -226,32 +222,32 @@ RepeatedPrimitiveFieldGenerator::~RepeatedPrimitiveFieldGenerator() {}
 
 void RepeatedPrimitiveFieldGenerator::
 GeneratePrivateMembers(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GeneratePrivateMembers");
+  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GeneratePrivateMembers\n");
 }
 
 void RepeatedPrimitiveFieldGenerator::
 GenerateAccessorDeclarations(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateAccessorDeclarations");
+  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateAccessorDeclarations\n");
 }
 
 void RepeatedPrimitiveFieldGenerator::
 GenerateInlineAccessorDefinitions(io::Printer* printer, bool is_inline) const {
-  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateInlineAccessorDefinitions");
+  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateInlineAccessorDefinitions\n");
 }
 
 void RepeatedPrimitiveFieldGenerator::
 GenerateClearingCode(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateClearingCode");
+  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateClearingCode\n");
 }
 
 void RepeatedPrimitiveFieldGenerator::
 GenerateMergingCode(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateMergingCode");
+  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateMergingCode\n");
 }
 
 void RepeatedPrimitiveFieldGenerator::
 GenerateSwappingCode(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateSwappingCode");
+  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateSwappingCode\n");
 }
 
 void RepeatedPrimitiveFieldGenerator::
@@ -261,32 +257,32 @@ GenerateConstructorCode(io::Printer* printer) const {
 
 void RepeatedPrimitiveFieldGenerator::
 GenerateCopyConstructorCode(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateCopyConstructorCode");
+  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateCopyConstructorCode\n");
 }
 
 void RepeatedPrimitiveFieldGenerator::
 GenerateMergeFromCodedStream(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateMergeFromCodedStream");
+  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateMergeFromCodedStream\n");
 }
 
 void RepeatedPrimitiveFieldGenerator::
 GenerateMergeFromCodedStreamWithPacking(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateMergeFromCodedStreamWithPacking");
+  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateMergeFromCodedStreamWithPacking\n");
 }
 
 void RepeatedPrimitiveFieldGenerator::
 GenerateSerializeWithCachedSizes(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateSerializeWithCachedSizes");
+  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateSerializeWithCachedSizes\n");
 }
 
 void RepeatedPrimitiveFieldGenerator::
 GenerateSerializeWithCachedSizesToArray(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateSerializeWithCachedSizesToArray");
+  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateSerializeWithCachedSizesToArray\n");
 }
 
 void RepeatedPrimitiveFieldGenerator::
 GenerateByteSize(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateByteSize");
+  printer->Print("--TODO: RepeatedPrimitiveFieldGenerator::GenerateByteSize\n");
 }
 
 }  // namespace ada

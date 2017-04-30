@@ -28,10 +28,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Author: zackboll@gmail.com (Zack Boll)
-//  Based on original Protocol Buffers design by
-//  Sanjay Ghemawat, Jeff Dean, and others.
-
 #include <google/protobuf/compiler/ada/ada_string_field.h>
 #include <google/protobuf/compiler/ada/ada_helpers.h>
 #include <google/protobuf/io/printer.h>
@@ -102,13 +98,13 @@ GeneratePrivateMembers(io::Printer* printer) const {
   // There should be very little overhead anyway because it's just a tagged
   // pointer in-memory.
 
-  printer->Print("--TODO: StringFieldGenerator::GeneratePrivateMembers");
+  printer->Print("--TODO: StringFieldGenerator::GeneratePrivateMembers\n");
 }
 
 void StringFieldGenerator::
 GenerateStaticMembers(io::Printer* printer) const {
   if (!descriptor_->default_value_string().empty()) {
-    printer->Print("--TODO: StringFieldGenerator::GenerateStaticMembers");
+    printer->Print("--TODO: StringFieldGenerator::GenerateStaticMembers\n");
   }
 }
 
@@ -132,20 +128,20 @@ GenerateAccessorDeclarations(io::Printer* printer) const {
   // the string's underlying representation.
 
   //TODO: Complete Ada implementation
-  printer->Print("--TODO: StringFieldGenerator::GenerateAccessorDeclarations");
+  printer->Print("--TODO: StringFieldGenerator::GenerateAccessorDeclarations\n");
 }
 
 void StringFieldGenerator::
 GenerateInlineAccessorDefinitions(io::Printer* printer,
                                   bool is_inline) const {
   //TODO: Complete Ada implementation
-  printer->Print("--TODO: StringFieldGenerator::GenerateInlineAccessorDefinitions");
+  printer->Print("--TODO: StringFieldGenerator::GenerateInlineAccessorDefinitions\n");
 }
 
 void StringFieldGenerator::
 GenerateNonInlineAccessorDefinitions(io::Printer* printer) const {
   //TODO: Complete Ada implementation
-  printer->Print("--TODO: StringFieldGenerator::GenerateNonInlineAccessorDefinitions");
+  printer->Print("--TODO: StringFieldGenerator::GenerateNonInlineAccessorDefinitions\n");
 }
 
 void StringFieldGenerator::
@@ -156,7 +152,7 @@ GenerateClearingCode(io::Printer* printer) const {
   // below methods are inlined one-liners)!
 
   // TODO: Complete Ada implementation
-  printer->Print("--TODO: StringFieldGenerator::GenerateClearingCode");
+  printer->Print("--TODO: StringFieldGenerator::GenerateClearingCode\n");
 }
 
 void StringFieldGenerator::
@@ -170,63 +166,63 @@ GenerateMessageClearingCode(io::Printer* printer) const {
   // will have checked that this field is set.  If so, we can avoid redundant
   // checks against default_variable.
 
-  printer->Print("--TODO: StringFieldGenerator::GenerateMessageClearingCode");
+  printer->Print("--TODO: StringFieldGenerator::GenerateMessageClearingCode\n");
 }
 
 void StringFieldGenerator::
 GenerateMergingCode(io::Printer* printer) const {
-  printer->Print("--TODO: StringFieldGenerator::GenerateMergingCode");
+  printer->Print("--TODO: StringFieldGenerator::GenerateMergingCode\n");
 }
 
 void StringFieldGenerator::
 GenerateSwappingCode(io::Printer* printer) const {
-  printer->Print("--TODO: StringFieldGenerator::GenerateSwappingCode");
+  printer->Print("--TODO: StringFieldGenerator::GenerateSwappingCode\n");
 }
 
 void StringFieldGenerator::
 GenerateConstructorCode(io::Printer* printer) const {
-  printer->Print("--TODO: StringFieldGenerator::GenerateConstructorCode");
+  printer->Print("--TODO: StringFieldGenerator::GenerateConstructorCode\n");
 }
 
 void StringFieldGenerator::
 GenerateCopyConstructorCode(io::Printer* printer) const {
   GenerateConstructorCode(printer);
-  printer->Print("--TODO: StringFieldGenerator::GenerateCopyConstructorCode");
+  printer->Print("--TODO: StringFieldGenerator::GenerateCopyConstructorCode\n");
 }
 
 void StringFieldGenerator::
 GenerateDestructorCode(io::Printer* printer) const {
-  printer->Print("--TODO: StringFieldGenerator::GenerateDestructorCode");
+  printer->Print("--TODO: StringFieldGenerator::GenerateDestructorCode\n");
 }
 
 void StringFieldGenerator::
 GenerateDefaultInstanceAllocator(io::Printer* printer) const {
-  printer->Print("--TODO: StringFieldGenerator::GenerateDefaultInstanceAllocator");
+  printer->Print("--TODO: StringFieldGenerator::GenerateDefaultInstanceAllocator\n");
 }
 
 void StringFieldGenerator::
 GenerateShutdownCode(io::Printer* printer) const {
-  printer->Print("--TODO: StringFieldGenerator::GenerateShutdownCode");
+  printer->Print("--TODO: StringFieldGenerator::GenerateShutdownCode\n");
 }
 
 void StringFieldGenerator::
 GenerateMergeFromCodedStream(io::Printer* printer) const {
-  printer->Print("--TODO: StringFieldGenerator::GenerateMergeFromCodedStream");
+  printer->Print("--TODO: StringFieldGenerator::GenerateMergeFromCodedStream\n");
 }
 
 void StringFieldGenerator::
 GenerateSerializeWithCachedSizes(io::Printer* printer) const {
-  printer->Print("--TODO: StringFieldGenerator::GenerateSerializeWithCachedSizes");
+  printer->Print("--TODO: StringFieldGenerator::GenerateSerializeWithCachedSizes\n");
 }
 
 void StringFieldGenerator::
 GenerateSerializeWithCachedSizesToArray(io::Printer* printer) const {
-  printer->Print("--TODO: StringFieldGenerator::GenerateSerializeWithCachedSizesToArray");
+  printer->Print("--TODO: StringFieldGenerator::GenerateSerializeWithCachedSizesToArray\n");
 }
 
 void StringFieldGenerator::
 GenerateByteSize(io::Printer* printer) const {
-  printer->Print("--TODO: StringFieldGenerator::GenerateByteSize");
+  printer->Print("--TODO: StringFieldGenerator::GenerateByteSize\n");
 }
 
 // ===================================================================
@@ -244,12 +240,12 @@ StringOneofFieldGenerator::~StringOneofFieldGenerator() {}
 void StringOneofFieldGenerator::
 GenerateInlineAccessorDefinitions(io::Printer* printer,
                                   bool is_inline) const {
-  printer->Print("--TODO: StringOneofFieldGenerator::GenerateInlineAccessorDefinitions");
+  printer->Print("--TODO: StringOneofFieldGenerator::GenerateInlineAccessorDefinitions\n");
 }
 
 void StringOneofFieldGenerator::
 GenerateClearingCode(io::Printer* printer) const {
-  printer->Print("--TODO: StringOneofFieldGenerator::GenerateClearingCode");
+  printer->Print("--TODO: StringOneofFieldGenerator::GenerateClearingCode\n");
 }
 
 void StringOneofFieldGenerator::
@@ -264,12 +260,12 @@ GenerateSwappingCode(io::Printer* printer) const {
 
 void StringOneofFieldGenerator::
 GenerateConstructorCode(io::Printer* printer) const {
-  printer->Print("--TODO: StringOneofFieldGenerator::GenerateConstructorCode");
+  printer->Print("--TODO: StringOneofFieldGenerator::GenerateConstructorCode\n");
 }
 
 void StringOneofFieldGenerator::
 GenerateMergeFromCodedStream(io::Printer* printer) const {
-  printer->Print("--TODO: StringOneofFieldGenerator::GenerateMergeFromCodedStream");
+  printer->Print("--TODO: StringOneofFieldGenerator::GenerateMergeFromCodedStream\n");
 }
 
 // ===================================================================
@@ -284,33 +280,33 @@ RepeatedStringFieldGenerator::~RepeatedStringFieldGenerator() {}
 
 void RepeatedStringFieldGenerator::
 GeneratePrivateMembers(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedStringFieldGenerator::GeneratePrivateMembers");
+  printer->Print("--TODO: RepeatedStringFieldGenerator::GeneratePrivateMembers\n");
 }
 
 void RepeatedStringFieldGenerator::
 GenerateAccessorDeclarations(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateAccessorDeclarations");
+  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateAccessorDeclarations\n");
 }
 
 void RepeatedStringFieldGenerator::
 GenerateInlineAccessorDefinitions(io::Printer* printer,
                                   bool is_inline) const {
-  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateInlineAccessorDefinitions");
+  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateInlineAccessorDefinitions\n");
 }
 
 void RepeatedStringFieldGenerator::
 GenerateClearingCode(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateClearingCode");
+  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateClearingCode\n");
 }
 
 void RepeatedStringFieldGenerator::
 GenerateMergingCode(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateMergingCode");
+  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateMergingCode\n");
 }
 
 void RepeatedStringFieldGenerator::
 GenerateSwappingCode(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateSwappingCode");
+  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateSwappingCode\n");
 }
 
 void RepeatedStringFieldGenerator::
@@ -320,27 +316,27 @@ GenerateConstructorCode(io::Printer* printer) const {
 
 void RepeatedStringFieldGenerator::
 GenerateCopyConstructorCode(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateCopyConstructorCode");
+  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateCopyConstructorCode\n");
 }
 
 void RepeatedStringFieldGenerator::
 GenerateMergeFromCodedStream(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateMergeFromCodedStream");
+  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateMergeFromCodedStream\n");
 }
 
 void RepeatedStringFieldGenerator::
 GenerateSerializeWithCachedSizes(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateSerializeWithCachedSizes");
+  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateSerializeWithCachedSizes\n");
 }
 
 void RepeatedStringFieldGenerator::
 GenerateSerializeWithCachedSizesToArray(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateSerializeWithCachedSizesToArray");
+  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateSerializeWithCachedSizesToArray\n");
 }
 
 void RepeatedStringFieldGenerator::
 GenerateByteSize(io::Printer* printer) const {
-  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateByteSize");
+  printer->Print("--TODO: RepeatedStringFieldGenerator::GenerateByteSize\n");
 }
 
 }  // namespace ada
