@@ -36,6 +36,7 @@
 #ifndef OPENSOURCE_PROTOBUF_CPP_BOOTSTRAP
 #include <google/protobuf/compiler/python/python_generator.h>
 #include <google/protobuf/compiler/java/java_generator.h>
+#include <google/protobuf/compiler/ada/ada_generator.h>
 #endif  // ! OPENSOURCE_PROTOBUF_CPP_BOOTSTRAP
 
 #ifndef OPENSOURCE_PROTOBUF_CPP_BOOTSTRAP
@@ -62,6 +63,12 @@ int main(int argc, char* argv[]) {
   google::protobuf::compiler::java::JavaGenerator java_generator;
   cli.RegisterGenerator("--java_out", "--java_opt", &java_generator,
                         "Generate Java source file.");
+
+  // Proto2 Ada
+  google::protobuf::compiler::ada::AdaGenerator ada_generator;
+  cli.RegisterGenerator("--ada_out", "--ada_opt", &ada_generator,
+                        "Generator Ada source file.");
+
 #endif  // !OPENSOURCE_PROTOBUF_CPP_BOOTSTRAP
 
 

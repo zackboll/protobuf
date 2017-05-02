@@ -44,6 +44,8 @@
 #include <google/protobuf/io/zero_copy_stream.h>
 #include <google/protobuf/descriptor.pb.h>
 
+#include <iostream>
+
 namespace google {
 namespace protobuf {
 namespace compiler {
@@ -103,6 +105,8 @@ bool AdaGenerator::Generate(const FileDescriptor* file,
       return false;
     }
   }
+
+  std::cout << "Running Ada generator !!" << std::endl;
 
   // -----------------------------------------------------------------
 

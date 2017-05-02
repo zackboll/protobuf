@@ -1,6 +1,19 @@
 set(libprotoc_files
   ${protobuf_source_dir}/src/google/protobuf/compiler/code_generator.cc
   ${protobuf_source_dir}/src/google/protobuf/compiler/command_line_interface.cc
+  ${protobuf_source_dir}/src/google/protobuf/compiler/ada/ada_enum.cc
+  ${protobuf_source_dir}/src/google/protobuf/compiler/ada/ada_enum_field.cc
+  ${protobuf_source_dir}/src/google/protobuf/compiler/ada/ada_extension.cc
+  ${protobuf_source_dir}/src/google/protobuf/compiler/ada/ada_field.cc
+  ${protobuf_source_dir}/src/google/protobuf/compiler/ada/ada_file.cc
+  ${protobuf_source_dir}/src/google/protobuf/compiler/ada/ada_generator.cc
+  ${protobuf_source_dir}/src/google/protobuf/compiler/ada/ada_helpers.cc
+  ${protobuf_source_dir}/src/google/protobuf/compiler/ada/ada_map_field.cc
+  ${protobuf_source_dir}/src/google/protobuf/compiler/ada/ada_message.cc
+  ${protobuf_source_dir}/src/google/protobuf/compiler/ada/ada_message_field.cc
+  ${protobuf_source_dir}/src/google/protobuf/compiler/ada/ada_primitive_field.cc
+  ${protobuf_source_dir}/src/google/protobuf/compiler/ada/ada_service.cc
+  ${protobuf_source_dir}/src/google/protobuf/compiler/ada/ada_string_field.cc
   ${protobuf_source_dir}/src/google/protobuf/compiler/cpp/cpp_enum.cc
   ${protobuf_source_dir}/src/google/protobuf/compiler/cpp/cpp_enum_field.cc
   ${protobuf_source_dir}/src/google/protobuf/compiler/cpp/cpp_extension.cc
