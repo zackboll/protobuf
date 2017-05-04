@@ -59,14 +59,8 @@ void SetMessageVariables(const FieldDescriptor* descriptor,
       SafeFunctionName(descriptor->containing_type(),
                        descriptor, "release_");
   (*variables)["full_name"] = descriptor->full_name();
-  if (options.proto_h && IsFieldDependent(descriptor)) {
-    (*variables)["dependent_type"] = "T::" + DependentTypeName(descriptor);
-    (*variables)["dependent_typename"] =
-        "typename T::" + DependentTypeName(descriptor);
-  } else {
-    (*variables)["dependent_type"] = FieldMessageTypeName(descriptor);
-    (*variables)["dependent_typename"] = FieldMessageTypeName(descriptor);
-  }
+  (*variables)["dependent_type"] = FieldMessageTypeName(descriptor);
+  (*variables)["dependent_typename"] = FieldMessageTypeName(descriptor);
 }
 
 }  // namespace
@@ -76,8 +70,8 @@ void SetMessageVariables(const FieldDescriptor* descriptor,
 MessageFieldGenerator::MessageFieldGenerator(const FieldDescriptor* descriptor,
                                              const Options& options)
     : FieldGenerator(options),
-      descriptor_(descriptor),
-      dependent_field_(options.proto_h && IsFieldDependent(descriptor)) {
+      descriptor_(descriptor)
+{
   SetMessageVariables(descriptor, &variables_, options);
 }
 
@@ -200,8 +194,7 @@ GenerateByteSize(io::Printer* printer) const {
 MessageOneofFieldGenerator::
 MessageOneofFieldGenerator(const FieldDescriptor* descriptor,
                            const Options& options)
-  : MessageFieldGenerator(descriptor, options),
-    dependent_base_(options.proto_h) {
+  : MessageFieldGenerator(descriptor, options) {
   SetCommonOneofFieldVariables(descriptor, &variables_);
 }
 
@@ -213,9 +206,6 @@ GenerateDependentAccessorDeclarations(io::Printer* printer) const {
   printer->Print("--TODO: MessageOneofFieldGenerator::GenerateDependentAccessorDeclarations\n");
   // Oneof field getters must be dependent as they call default_instance().
   // Otherwise, the logic is the same as MessageFields.
-  if (!dependent_field_) {
-    return;
-  }
   MessageFieldGenerator::GenerateDependentAccessorDeclarations(printer);
 }
 
@@ -225,9 +215,6 @@ GenerateGetterDeclaration(io::Printer* printer) const {
   // Oneof field getters must be dependent as they call default_instance().
   // Unlike MessageField, this means there is no (non-dependent) getter to
   // generate.
-  if (dependent_field_) {
-    return;
-  }
 }
 
 void MessageOneofFieldGenerator::
@@ -283,9 +270,7 @@ GenerateConstructorCode(io::Printer* printer) const {
 RepeatedMessageFieldGenerator::RepeatedMessageFieldGenerator(
     const FieldDescriptor* descriptor, const Options& options)
     : FieldGenerator(options),
-      descriptor_(descriptor),
-      dependent_field_(options.proto_h && IsFieldDependent(descriptor)),
-      dependent_getter_(dependent_field_ && options.safe_boundary_check) {
+      descriptor_(descriptor) {
   SetMessageVariables(descriptor, &variables_, options);
 }
 

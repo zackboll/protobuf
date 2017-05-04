@@ -95,7 +95,6 @@ class StringOneofFieldGenerator : public StringFieldGenerator {
   void GenerateMergeFromCodedStream(io::Printer* printer) const;
 
  private:
-  const bool dependent_field_;
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(StringOneofFieldGenerator);
 };
 

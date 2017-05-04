@@ -1,0 +1,9 @@
+# development .gitignore for zackboll, keep out of repository
+*.d
+*.db
+*.db-shm
+*.db-wal
+google/protobuf/compiler/protobuf-loc.xml
+*.cgpr
+protobuf-loc.xml
+protobuf.gpr

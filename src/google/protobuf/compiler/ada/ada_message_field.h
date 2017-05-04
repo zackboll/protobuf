@@ -72,7 +72,6 @@ class MessageFieldGenerator : public FieldGenerator {
   virtual void GenerateGetterDeclaration(io::Printer* printer) const;
 
   const FieldDescriptor* descriptor_;
-  const bool dependent_field_;
   std::map<string, string> variables_;
 
  private:
@@ -107,7 +106,6 @@ class MessageOneofFieldGenerator : public MessageFieldGenerator {
   void InternalGenerateInlineAccessorDefinitions(
       const std::map<string, string>& variables, io::Printer* printer) const;
 
-  const bool dependent_base_;
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(MessageOneofFieldGenerator);
 };
 
@@ -139,8 +137,6 @@ class RepeatedMessageFieldGenerator : public FieldGenerator {
       io::Printer* printer) const;
 
   const FieldDescriptor* descriptor_;
-  const bool dependent_field_;
-  const bool dependent_getter_;
   std::map<string, string> variables_;
 
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(RepeatedMessageFieldGenerator);

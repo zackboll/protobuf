@@ -552,13 +552,6 @@ MessageGenerator::MessageGenerator(const Descriptor* descriptor,
     if (descriptor->field(i)->is_required()) {
       ++num_required_fields_;
     }
-    if (options.proto_h && IsFieldDependent(descriptor->field(i))) {
-      use_dependent_base_ = true;
-    }
-  }
-  if (options.proto_h && descriptor->oneof_decl_count() > 0) {
-    // Always make oneofs dependent.
-    use_dependent_base_ = true;
   }
 }
 

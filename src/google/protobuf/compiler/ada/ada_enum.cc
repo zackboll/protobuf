@@ -66,9 +66,6 @@ EnumGenerator::~EnumGenerator() {}
 
 void EnumGenerator::FillForwardDeclaration(
     std::map<string, const EnumDescriptor*>* enum_names) {
-  if (!options_.proto_h) {
-    return;
-  }
   (*enum_names)[classname_] = descriptor_;
 }
 
@@ -76,7 +73,7 @@ void EnumGenerator::GenerateDefinition(io::Printer* printer) {
   std::map<string, string> vars;
   vars["classname"] = classname_;
   vars["short_name"] = descriptor_->name();
-  vars["enumbase"] = classname_ + (options_.proto_h ? " : int" : "");
+  vars["enumbase"] = classname_;
 
   printer->Print(vars, "type $enumbase$ is (\n");
   printer->Annotate("enumbase", descriptor_);

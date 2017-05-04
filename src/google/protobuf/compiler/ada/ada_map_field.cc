@@ -104,7 +104,7 @@ MapFieldGenerator::MapFieldGenerator(const FieldDescriptor* descriptor,
                                      const Options& options)
     : FieldGenerator(options),
       descriptor_(descriptor),
-      dependent_field_(options.proto_h && IsFieldDependent(descriptor)) {
+      dependent_field_(IsFieldDependent(descriptor)) {
   SetMessageVariables(descriptor, &variables_, options);
 }
 

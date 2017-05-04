@@ -230,8 +230,7 @@ GenerateByteSize(io::Printer* printer) const {
 StringOneofFieldGenerator::
 StringOneofFieldGenerator(const FieldDescriptor* descriptor,
                           const Options& options)
-    : StringFieldGenerator(descriptor, options),
-      dependent_field_(options.proto_h) {
+    : StringFieldGenerator(descriptor, options) {
   SetCommonOneofFieldVariables(descriptor, &variables_);
 }
 

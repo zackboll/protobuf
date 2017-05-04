@@ -1,0 +1,60 @@
+with "gnatcoll";
+
+project ProtoBuf is
+
+  x86_GNATMAKE     := "gnatmake";
+  x86_GNATLIST     := "gnatls";
+  x86_GNAT         := "gnat";
+  x86_Debugger     := "gdb";
+  x86_C_Compiler   := "gcc";
+  x86_Cxx_Compiler := "g++";
+
+  CPP_Flags := ("-E", "-std=c++11", "-I/home/zboll/git/protobuf/src");
+
+  Ada_Flags := ("-gnatQ", "-gnatwa", "-gnatwX", "-gnatwB", "-gnatwJ",
+                "-gnatp", "-funswitch-loops", "-fgcse-after-reload",
+                "-fpredictive-commoning", "-gnatn");
+
+  Linker_Flags := ("-g");
+
+  package Naming is
+    for Casing use "lowercase";
+    for Specification_Suffix ("C++") use ".h";
+    for Implementation_Suffix ("C++") use ".cc";
+  end Naming;
+
+  ------------------------------------------------------------------------------
+  -- IDE
+  ------------------------------------------------------------------------------
+
+  package IDE is
+    for Compiler_Command ("Ada") use x86_GNATMAKE;
+    for Compiler_Command ("C") use x86_C_Compiler;
+    for Compiler_Command ("C++") use x86_Cxx_Compiler;
+    for Gnatlist use x86_GNATLIST;
+    for Gnat use x86_GNAT;
+    for Debugger_Command use x86_Debugger;
+  end IDE;
+
+  package Compiler is
+    for Default_Switches ("C++") use Compiler'Default_Switches ("C++") & CPP_Flags;
+    for Default_Switches ("Ada") use Compiler'Default_Switches ("Ada") & Ada_Flags;
+  end Compiler;
+
+  package Linker is
+    for Default_Switches ("C++") use Linker_Flags;
+    for Default_Switches ("Ada") use Linker_Flags;
+  end Linker;
+
+  for Languages   use ("Ada", "C++");
+  for Source_Dirs use ("../src/google/protobuf",
+                       "../src/google/protobuf/compiler/**", 
+                       "../src/google/protobuf/io",
+                       "../src/google/protobuf/stubs", 
+                       ".",
+                       "binding",
+                       "stubs",
+                       "temp");
+  for Object_Dir use "obj";
+
+end ProtoBuf;
