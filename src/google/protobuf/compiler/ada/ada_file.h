@@ -67,10 +67,6 @@ class FileGenerator {
   void GenerateHeader(io::Printer* printer);
 
   // info_path, if non-empty, should be the path (relative to printer's output)
-  // to the metadata file describing this proto header.
-  void GenerateProtoHeader(io::Printer* printer,
-                           const string& info_path);
-  // info_path, if non-empty, should be the path (relative to printer's output)
   // to the metadata file describing this PB header.
   void GeneratePBHeader(io::Printer* printer,
                         const string& info_path);
