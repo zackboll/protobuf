@@ -107,18 +107,15 @@ bool AdaGenerator::Generate(const FileDescriptor* file,
   }
 
   // -----------------------------------------------------------------
-  
-  std::cout << "Running Ada generator !!" << std::endl;
-  
+    
   string basename = StripProto(file->name());
-  
-  std::cout << "base name: " << basename << std::endl;
-  
+    
   FileGenerator file_generator(file, file_options);
 
   // Generate Ada package specification
 
   basename.append(".pb");
+	  
   {
     google::protobuf::scoped_ptr<io::ZeroCopyOutputStream> output(
         generator_context->Open(basename + ".ads"));
@@ -129,16 +126,22 @@ bool AdaGenerator::Generate(const FileDescriptor* file,
     io::Printer printer(output.get(), '$', file_options.annotate_headers
                                              ? &annotation_collector
                                              : NULL);
-    /*file_generator.GeneratePBHeader(
-      (&printer, file_options.annotate_headers ? info_path : ""));*/
+    file_generator.GeneratePBHeader(
+      &printer, file_options.annotate_headers ? info_path : "");
     if (file_options.annotate_headers) {
       google::protobuf::scoped_ptr<io::ZeroCopyOutputStream> info_output(
           generator_context->Open(info_path));
-      //annotations.SerializeZeroCopyStream(info_output.get());
+      annotations.SerializeToZeroCopyStream(info_output.get());
     }
   }
 
   // Generate Ada package body file
+  {
+    google::protobuf::scoped_ptr<io::ZeroCopyOutputStream> output(
+        generator_context->Open(basename + ".adb"));
+    io::Printer printer(output.get(), '$');
+    file_generator.GenerateSource(&printer);
+  }
 
   return true;
 

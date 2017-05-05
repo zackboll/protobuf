@@ -227,11 +227,97 @@ string QualifiedFileLevelSymbol(const string& package, const string& name) {
 string SafeFunctionName(const Descriptor* descriptor,
                         const FieldDescriptor* field,
                         const string& prefix) {
-  return google::protobuf::compiler::cpp::
-    SafeFunctionName (descriptor, field, prefix);
+  // Do not use FieldName() since it will escape keywords.
+  string name = field->name();
+  LowerString(&name);
+  string function_name = prefix + name;
+  if (descriptor->FindFieldByName(function_name)) {
+    // Single underscore will also make it conflicting with the private data
+    // member. We use double underscore to escape function names.
+    function_name.append("__");
+  } else if (kKeywords.count(name) > 0) {
+    // If the field name is a keyword, we append the underscore back to keep it
+    // consistent with other function names.
+    function_name.append("_");
+  }
+  return function_name;
+}
+
+bool StaticInitializersForced(const FileDescriptor* file,
+                              const Options& options) {
+  if (HasDescriptorMethods(file, options) || file->extension_count() > 0) {
+    return true;
+  }
+  for (int i = 0; i < file->message_type_count(); ++i) {
+    if (HasExtension(file->message_type(i))) {
+      return true;
+    }
+  }
+  return false;
 }
 
 
+static bool HasMapFields(const Descriptor* descriptor) {
+  for (int i = 0; i < descriptor->field_count(); ++i) {
+    if (descriptor->field(i)->is_map()) {
+      return true;
+    }
+  }
+  for (int i = 0; i < descriptor->nested_type_count(); ++i) {
+    if (HasMapFields(descriptor->nested_type(i))) return true;
+  }
+  return false;
+}
+
+bool HasMapFields(const FileDescriptor* file) {
+  for (int i = 0; i < file->message_type_count(); ++i) {
+    if (HasMapFields(file->message_type(i))) return true;
+  }
+  return false;
+}
+
+static bool HasEnumDefinitions(const Descriptor* message_type) {
+  if (message_type->enum_type_count() > 0) return true;
+  for (int i = 0; i < message_type->nested_type_count(); ++i) {
+    if (HasEnumDefinitions(message_type->nested_type(i))) return true;
+  }
+  return false;
+}
+
+bool HasEnumDefinitions(const FileDescriptor* file) {
+  if (file->enum_type_count() > 0) return true;
+  for (int i = 0; i < file->message_type_count(); ++i) {
+    if (HasEnumDefinitions(file->message_type(i))) return true;
+  }
+  return false;
+}
+
+bool IsStringOrMessage(const FieldDescriptor* field) {
+  switch (field->cpp_type()) {
+    case FieldDescriptor::CPPTYPE_INT32:
+    case FieldDescriptor::CPPTYPE_INT64:
+    case FieldDescriptor::CPPTYPE_UINT32:
+    case FieldDescriptor::CPPTYPE_UINT64:
+    case FieldDescriptor::CPPTYPE_DOUBLE:
+    case FieldDescriptor::CPPTYPE_FLOAT:
+    case FieldDescriptor::CPPTYPE_BOOL:
+    case FieldDescriptor::CPPTYPE_ENUM:
+      return false;
+    case FieldDescriptor::CPPTYPE_STRING:
+    case FieldDescriptor::CPPTYPE_MESSAGE:
+      return true;
+  }
+
+  GOOGLE_LOG(FATAL) << "Can't get here.";
+  return false;
+}
+
+FieldOptions::CType EffectiveStringCType(const FieldDescriptor* field) {
+  GOOGLE_DCHECK(field->cpp_type() == FieldDescriptor::CPPTYPE_STRING);
+  // Open-source protobuf release only supports STRING ctype.
+  return FieldOptions::STRING;
+
+}
 
 bool IsAnyMessage(const FileDescriptor* descriptor) {
   return google::protobuf::compiler::cpp::IsAnyMessage (descriptor);

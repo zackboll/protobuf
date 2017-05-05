@@ -147,6 +147,22 @@ inline bool PreserveUnknownFields(const Descriptor* message) {
 ::google::protobuf::FileOptions_OptimizeMode GetOptimizeFor(
     const FileDescriptor* file, const Options& options);
 
+// If PreserveUnknownFields() is true, determines whether unknown
+// fields will be stored in an UnknownFieldSet or a string.
+// If PreserveUnknownFields() is false, this method will not be
+// used.
+inline bool UseUnknownFieldSet(const FileDescriptor* file,
+                               const Options& options) {
+  return GetOptimizeFor(file, options) != FileOptions::LITE_RUNTIME;
+}
+
+// Does the file have any map fields, necessitating the file to include
+// map_field_inl.h and map.h.
+bool HasMapFields(const FileDescriptor* file);
+
+// Does this file have any enum type definitions?
+bool HasEnumDefinitions(const FileDescriptor* file);
+
 // Does this file have generated parsing, serialization, and other
 // standard methods for which reflection-based fallback implementations exist?
 inline bool HasGeneratedMethods(const FileDescriptor* file,
