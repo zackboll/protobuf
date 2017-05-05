@@ -53,6 +53,7 @@ project ProtoBuf is
                        "../src/google/protobuf/stubs", 
                        ".",
                        "binding",
+                       "io",
                        "stubs",
                        "temp");
   for Object_Dir use "obj";

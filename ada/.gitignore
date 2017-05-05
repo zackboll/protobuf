@@ -1,0 +1,8 @@
+*.db
+*.db-shm
+messages.txt
+*.ali
+*.db-wal
+*.xml
+obj
+
