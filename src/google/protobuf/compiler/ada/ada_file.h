@@ -63,13 +63,11 @@ class FileGenerator {
   FileGenerator(const FileDescriptor* file, const Options& options);
   ~FileGenerator();
 
-  // Shared code between the two header generators below.
-  void GenerateHeader(io::Printer* printer);
-
   // info_path, if non-empty, should be the path (relative to printer's output)
   // to the metadata file describing this PB header.
   void GeneratePBHeader(io::Printer* printer,
                         const string& info_path);
+
   void GenerateSource(io::Printer* printer);
 
  private:
@@ -80,8 +78,8 @@ class FileGenerator {
   // for types defined in the file.
   void GenerateBuildDescriptors(io::Printer* printer);
 
-  void GenerateNamespaceOpeners(io::Printer* printer);
-  void GenerateNamespaceClosers(io::Printer* printer);
+  void GeneratePackageOpen(io::Printer* printer);
+  void GeneratePackageClose(io::Printer* printer);
 
   // For other imports, generates their forward-declarations.
   void GenerateForwardDeclarations(io::Printer* printer);
@@ -91,19 +89,13 @@ class FileGenerator {
   // transient depednencies.
   void FillForwardDeclarations(ForwardDeclarations* decls);
 
-  // Generates top or bottom of a header file.
+  // Generates top of a header file.
   void GenerateTopHeaderGuard(io::Printer* printer,
                               const string& filename_identifier);
-  void GenerateBottomHeaderGuard(io::Printer* printer,
-                                 const string& filename_identifier);
 
   // Generates #include directives.
   void GenerateLibraryIncludes(io::Printer* printer);
   void GenerateDependencyIncludes(io::Printer* printer);
-
-  // Generate a pragma to pull in metadata using the given info_path (if
-  // non-empty). info_path should be relative to printer's output.
-  void GenerateMetadataPragma(io::Printer* printer, const string& info_path);
 
   // Generates a couple of different pieces before definitions:
   void GenerateGlobalStateFunctionDeclarations(io::Printer* printer);
@@ -123,15 +115,6 @@ class FileGenerator {
   void GenerateInlineFunctionDefinitions(io::Printer* printer);
 
   void GenerateProto2NamespaceEnumSpecializations(io::Printer* printer);
-
-  // Sometimes the names we use in a .proto file happen to be defined as macros
-  // on some platforms (e.g., macro/minor used in plugin.proto are defined as
-  // macros in sys/types.h on FreeBSD and a few other platforms). To make the
-  // generated code compile on these platforms, we either have to undef the
-  // macro for these few platforms, or rename the field name for all platforms.
-  // Since these names are part of protobuf public API, renaming is generally
-  // a breaking change so we prefer the #undef approach.
-  void GenerateMacroUndefs(io::Printer* printer);
 
   const FileDescriptor* file_;
   const Options options_;

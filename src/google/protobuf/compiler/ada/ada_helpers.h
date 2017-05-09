@@ -255,6 +255,9 @@ inline ::google::protobuf::FileOptions_OptimizeMode GetOptimizeFor(
       : file->options().optimize_for();
 }
 
+// Returns fully qualified Ada package name
+string AdaPackageName (const FileDescriptor *file);
+
 }  // namespace ada
 }  // namespace compiler
 }  // namespace protobuf

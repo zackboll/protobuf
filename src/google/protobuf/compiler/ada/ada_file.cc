@@ -131,14 +131,6 @@ FileGenerator::FileGenerator(const FileDescriptor* file, const Options& options)
 
 FileGenerator::~FileGenerator() {}
 
-void FileGenerator::GenerateMacroUndefs(io::Printer* printer) {
-  printer->Print("--TODO: FileGenerator::GenerateMacroUndefs\n");
-}
-
-void FileGenerator::GenerateHeader(io::Printer* printer) {
-  printer->Print("--TODO: FileGenerator::GenerateHeader\n");
-}
-
 void FileGenerator::GeneratePBHeader(io::Printer* printer,
                                      const string& info_path) {
 
@@ -149,9 +141,37 @@ void FileGenerator::GeneratePBHeader(io::Printer* printer,
 
   GenerateDependencyIncludes(printer);
 
-  GenerateMetadataPragma(printer, info_path);
+  GenerateForwardDeclarations(printer);
 
-  GenerateBottomHeaderGuard(printer, filename_identifier);
+  GeneratePackageOpen(printer);
+
+  GenerateGlobalStateFunctionDeclarations(printer);
+
+  printer->Print("\n");
+
+  GenerateEnumDefinitions(printer);
+
+  printer->Print(kThickSeparator);
+  printer->Print("\n");
+
+  GenerateMessageDefinitions(printer);
+
+  printer->Print("\n");
+  printer->Print(kThickSeparator);
+  printer->Print("\n");
+
+  GenerateServiceDefinitions(printer);
+
+  GenerateExtensionIdentifiers(printer);
+
+  printer->Print("\n");
+  printer->Print(kThickSeparator);
+  printer->Print("\n");
+
+  GenerateInlineFunctionDefinitions(printer);
+
+  GeneratePackageClose(printer);
+
 }
 
 void FileGenerator::GenerateSource(io::Printer* printer) {
@@ -182,42 +202,7 @@ class FileGenerator::ForwardDeclarations {
   std::map<string, const EnumDescriptor*>& enums() { return enums_; }
 
   void Print(io::Printer* printer, const Options& options) const {
-    for (std::map<string, const EnumDescriptor *>::const_iterator
-             it = enums_.begin(),
-             end = enums_.end();
-         it != end; ++it) {
-      printer->Print("enum $enumname$ : int;\n", "enumname", it->first);
-      printer->Annotate("enumname", it->second);
-      printer->Print("bool $enumname$_IsValid(int value);\n", "enumname",
-                     it->first);
-    }
-    for (std::map<string, const Descriptor*>::const_iterator
-             it = classes_.begin(),
-             end = classes_.end();
-         it != end; ++it) {
-      printer->Print("class $classname$;\n", "classname", it->first);
-      printer->Annotate("classname", it->second);
-
-      printer->Print(
-          "class $classname$DefaultTypeInternal;\n"
-          "$dllexport_decl$"
-          "extern $classname$DefaultTypeInternal "
-          "_$classname$_default_instance_;\n",  // NOLINT
-          "dllexport_decl",
-          options.dllexport_decl.empty() ? "" : options.dllexport_decl + " ",
-          "classname",
-          it->first);
-    }
-    for (std::map<string, ForwardDeclarations *>::const_iterator
-             it = namespaces_.begin(),
-             end = namespaces_.end();
-         it != end; ++it) {
-      printer->Print("namespace $nsname$ {\n",
-                     "nsname", it->first);
-      it->second->Print(printer, options);
-      printer->Print("}  // namespace $nsname$\n",
-                     "nsname", it->first);
-    }
+    printer->Print("--TODO: ForwardDeclarations::Print\n");
   }
 
 
@@ -231,13 +216,17 @@ void FileGenerator::GenerateBuildDescriptors(io::Printer* printer) {
   printer->Print("--TODO: FileGenerator::GenerateBuildDescriptors\n");
 }
 
-void FileGenerator::GenerateNamespaceOpeners(io::Printer* printer) {
-  printer->Print("--TODO: FileGenerator::GenerateNamespaceOpeners\n");
+void FileGenerator::GeneratePackageOpen(io::Printer* printer) {
+  printer->Print("\n");
+  printer->Print("package $package$ is\n"
+                 "\n",
+		 "package", AdaPackageName(file_));
 }
 
-void FileGenerator::GenerateNamespaceClosers(io::Printer* printer) {
-  printer->Print("--TODO: FileGenerator::GenerateNamespaceClosers\n");
+void FileGenerator::GeneratePackageClose(io::Printer* printer) {
+  printer->Print("\nend $package$;\n", "package", AdaPackageName(file_));
 }
+
 
 void FileGenerator::GenerateForwardDeclarations(io::Printer* printer) {
   printer->Print("--TODO: FileGenerator::GenerateForwardDeclarations\n");
@@ -271,11 +260,6 @@ void FileGenerator::GenerateTopHeaderGuard(io::Printer* printer,
       "\n",
       "filename", file_->name());
 
-}
-
-void FileGenerator::GenerateBottomHeaderGuard(
-    io::Printer* printer, const string& filename_identifier) {
-  printer->Print("--TODO: FileGenerator::GenerateBottomHeaderGuard\n");
 }
 
 void FileGenerator::GenerateLibraryIncludes(io::Printer* printer) {
@@ -360,13 +344,21 @@ void FileGenerator::GenerateLibraryIncludes(io::Printer* printer) {
 
 }
 
-void FileGenerator::GenerateMetadataPragma(io::Printer* printer,
-                                           const string& info_path) {
-  printer->Print("--TODO: FileGenerator::GenerateMetadataPragma\n");
-}
-
 void FileGenerator::GenerateDependencyIncludes(io::Printer* printer) {
-  printer->Print("--TODO: FileGenerator::GenerateDependencyIncludes\n");
+  std::set<string> public_import_names;
+  for (int i = 0; i < file_->public_dependency_count(); i++) {
+    public_import_names.insert(file_->public_dependency(i)->name());
+  }
+
+  // TODO: make package contribute to file name
+
+  for (int i = 0; i < file_->dependency_count(); i++) {
+    const string& name = file_->dependency(i)->name();
+
+    printer->Print("limited with $dependency$;\n", "dependency",
+                   AdaPackageName(file_->dependency(i)));
+  }
+
 }
 
 void FileGenerator::GenerateGlobalStateFunctionDeclarations(
@@ -379,7 +371,10 @@ void FileGenerator::GenerateMessageDefinitions(io::Printer* printer) {
 }
 
 void FileGenerator::GenerateEnumDefinitions(io::Printer* printer) {
-  printer->Print("--TODO: FileGenerator::GenerateEnumDefinitions\n");
+  // Generate enum definitions
+  for (int i = 0; i < enum_generators_.size(); i++) {
+    enum_generators_[i]->GenerateDefinition(printer);
+  }
 }
 
 void FileGenerator::GenerateServiceDefinitions(io::Printer* printer) {

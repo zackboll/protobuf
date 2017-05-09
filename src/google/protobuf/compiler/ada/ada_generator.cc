@@ -88,16 +88,8 @@ bool AdaGenerator::Generate(const FileDescriptor* file,
   Options file_options;
 
   for (int i = 0; i < options.size(); i++) {
-    if (options[i].first == "dllexport_decl") {
-      file_options.dllexport_decl = options[i].second;
-    } else if (options[i].first == "safe_boundary_check") {
+    if (options[i].first == "safe_boundary_check") {
       file_options.safe_boundary_check = true;
-    } else if (options[i].first == "annotate_headers") {
-      file_options.annotate_headers = true;
-    } else if (options[i].first == "annotation_pragma_name") {
-      file_options.annotation_pragma_name = options[i].second;
-    } else if (options[i].first == "annotation_gaurd_name") {
-      file_options.annotation_gaurd_name = options[i].second;
     } else if (options[i].first == "lite") {
       file_options.enforce_lite = true;
     } else {
@@ -108,7 +100,7 @@ bool AdaGenerator::Generate(const FileDescriptor* file,
 
   // -----------------------------------------------------------------
     
-  string basename = StripProto(file->name());
+  string basename = AdaPackageName (file);
     
   FileGenerator file_generator(file, file_options);
 
@@ -119,20 +111,8 @@ bool AdaGenerator::Generate(const FileDescriptor* file,
   {
     google::protobuf::scoped_ptr<io::ZeroCopyOutputStream> output(
         generator_context->Open(basename + ".ads"));
-    GeneratedCodeInfo annotations;
-    io::AnnotationProtoCollector<GeneratedCodeInfo> annotation_collector(
-        &annotations);
-    string info_path = basename + ".ads.meta";
-    io::Printer printer(output.get(), '$', file_options.annotate_headers
-                                             ? &annotation_collector
-                                             : NULL);
-    file_generator.GeneratePBHeader(
-      &printer, file_options.annotate_headers ? info_path : "");
-    if (file_options.annotate_headers) {
-      google::protobuf::scoped_ptr<io::ZeroCopyOutputStream> info_output(
-          generator_context->Open(info_path));
-      annotations.SerializeToZeroCopyStream(info_output.get());
-    }
+    io::Printer printer(output.get(), '$', NULL);
+    file_generator.GeneratePBHeader(&printer, "");
   }
 
   // Generate Ada package body file

@@ -420,6 +420,14 @@ void GenerateUtf8CheckCodeForCord(const FieldDescriptor* field,
                         "VerifyUtf8Cord", "VerifyUTF8CordNamedField", printer);
 }
 
+string AdaPackageName (const FileDescriptor *file) {
+  string basename = StripProto(file->name());
+  string package = file->package();
+  if (package != "") {
+    basename = package + "." + basename;
+  }
+  return basename;
+}
 
 }  // namespace ada
 }  // namespace compiler

@@ -43,11 +43,6 @@ ServiceGenerator::ServiceGenerator(const ServiceDescriptor* descriptor,
   vars_["classname"] = descriptor_->name();
   vars_["file_namespace"] = FileLevelNamespace(descriptor_->file()->name());
   vars_["full_name"] = descriptor_->full_name();
-  if (options.dllexport_decl.empty()) {
-    vars_["dllexport"] = "";
-  } else {
-    vars_["dllexport"] = options.dllexport_decl + " ";
-  }
 }
 
 ServiceGenerator::~ServiceGenerator() {}
