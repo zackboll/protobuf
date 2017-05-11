@@ -1,0 +1,34 @@
+with "gnatcoll";
+with "interfaces_cpp";
+
+--
+-- Protobuf project file for Ada runtime
+--
+project ProtoBuf_Ada is
+
+  Ada_Flags := ("-gnatQ", "-gnatwa", "-gnatwX", "-gnatwB", "-gnatwJ",
+                "-gnatp", "-funswitch-loops", "-fgcse-after-reload",
+                "-fpredictive-commoning", "-gnatn");
+
+  Linker_Flags := ("-g");
+
+  package Naming is
+    for Casing use "lowercase";
+  end Naming;
+
+  package Compiler is
+    for Default_Switches ("Ada") use Compiler'Default_Switches ("Ada") & Ada_Flags;
+  end Compiler;
+
+  package Linker is
+    for Default_Switches ("Ada") use Linker_Flags;
+  end Linker;
+
+  for Languages   use ("Ada");
+  for Source_Dirs use (".",
+                       "binding",
+                       "io",
+                       "stubs");
+  for Object_Dir use "obj";
+
+end ProtoBuf_Ada;

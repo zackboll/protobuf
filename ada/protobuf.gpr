@@ -1,15 +1,16 @@
 with "gnatcoll";
+with "interfaces_cpp";
 
 project ProtoBuf is
 
-  x86_GNATMAKE     := "gnatmake";
-  x86_GNATLIST     := "gnatls";
-  x86_GNAT         := "gnat";
-  x86_Debugger     := "gdb";
-  x86_C_Compiler   := "gcc";
-  x86_Cxx_Compiler := "g++";
+  GNATMAKE     := "gnatmake";
+  GNATLIST     := "gnatls";
+  GNAT         := "gnat";
+  Debugger     := "gdb";
+  C_Compiler   := "gcc";
+  Cxx_Compiler := "g++";
 
-  CPP_Flags := ("-E", "-std=c++11", "-I/home/zboll/git/protobuf/src");
+  CPP_Flags := ("-E", "-std=c++11");
 
   Ada_Flags := ("-gnatQ", "-gnatwa", "-gnatwX", "-gnatwB", "-gnatwJ",
                 "-gnatp", "-funswitch-loops", "-fgcse-after-reload",
@@ -28,12 +29,12 @@ project ProtoBuf is
   ------------------------------------------------------------------------------
 
   package IDE is
-    for Compiler_Command ("Ada") use x86_GNATMAKE;
-    for Compiler_Command ("C") use x86_C_Compiler;
-    for Compiler_Command ("C++") use x86_Cxx_Compiler;
-    for Gnatlist use x86_GNATLIST;
-    for Gnat use x86_GNAT;
-    for Debugger_Command use x86_Debugger;
+    for Compiler_Command ("Ada") use GNATMAKE;
+    for Compiler_Command ("C") use C_Compiler;
+    for Compiler_Command ("C++") use Cxx_Compiler;
+    for Gnatlist use GNATLIST;
+    for Gnat use GNAT;
+    for Debugger_Command use Debugger;
   end IDE;
 
   package Compiler is
@@ -56,6 +57,6 @@ project ProtoBuf is
                        "io",
                        "stubs",
                        "temp");
-  for Object_Dir use "obj";
+  --for Object_Dir use "obj";
 
 end ProtoBuf;

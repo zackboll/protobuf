@@ -34,6 +34,8 @@
 #include <google/protobuf/io/printer.h>
 #include <google/protobuf/stubs/strutil.h>
 
+#include <iostream>
+
 namespace google {
 namespace protobuf {
 namespace compiler {
@@ -73,7 +75,7 @@ void EnumGenerator::GenerateDefinition(io::Printer* printer) {
   std::map<string, string> vars;
   vars["classname"] = classname_;
   vars["short_name"] = descriptor_->name();
-  vars["enumbase"] = classname_;
+  vars["enumbase"] = StripAdaPackageName (classname_);
 
   printer->Print(vars, "type $enumbase$ is (\n");
   printer->Annotate("enumbase", descriptor_);
@@ -86,7 +88,7 @@ void EnumGenerator::GenerateDefinition(io::Printer* printer) {
   for (int i = 0; i < descriptor_->value_count(); i++) {
     vars["name"] = EnumValueName(descriptor_->value(i));
     vars["prefix"] = (descriptor_->containing_type() == NULL) ?
-      "" : classname_ + "_";
+      "" : StripAdaPackageName (classname_) + "_";
     vars["deprecation"] = descriptor_->value(i)->options().deprecated() ?
        " PROTOBUF_DEPRECATED" : "";
 
@@ -113,7 +115,7 @@ void EnumGenerator::GenerateDefinition(io::Printer* printer) {
   for (int i = 0; i < descriptor_->value_count(); i++) {
     vars["name"] = EnumValueName(descriptor_->value(i));
     vars["prefix"] = (descriptor_->containing_type() == NULL) ?
-      "" : classname_ + "_";
+      "" : StripAdaPackageName (classname_) + "_";
     vars["number"] = Int32ToString(descriptor_->value(i)->number());
     vars["deprecation"] = descriptor_->value(i)->options().deprecated() ?
        " PROTOBUF_DEPRECATED" : "";
@@ -131,6 +133,13 @@ void EnumGenerator::GenerateDefinition(io::Printer* printer) {
   printer->Print(vars, "for $enumbase$'size use 32;");
   printer->Annotate("enumbase", descriptor_);
   printer->Print("\n");
+
+  printer->Print(vars,
+    "function $enumbase$_Is_Valid(Value: Integer) return Boolean;\n");
+
+  if (HasDescriptorMethods(descriptor_->file(), options_)) {
+    printer->Print ("--TODO: EnumGenerate Complete reflection methods\n");
+  }
 }
 
 void EnumGenerator::

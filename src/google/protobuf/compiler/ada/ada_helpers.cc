@@ -39,6 +39,10 @@
 #include <google/protobuf/stubs/strutil.h>
 #include <google/protobuf/stubs/substitute.h>
 
+#include <string>
+#include <sstream>
+#include <iterator>
+
 namespace google {
 namespace protobuf {
 namespace compiler {
@@ -427,6 +431,30 @@ string AdaPackageName (const FileDescriptor *file) {
     basename = package + "." + basename;
   }
   return basename;
+}
+
+// split string into vector based on delimiter
+template<typename Out>
+void split(const std::string &s, char delim, Out result) {
+    std::stringstream ss;
+    ss.str(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        *(result++) = item;
+    }
+}
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, std::back_inserter(elems));
+    return elems;
+}
+
+string StripAdaPackageName (const string full_name) {
+  // return vector delimited by "."  The last element of vector will be
+  // stripped Ada package name
+  std::vector<std::string> name_vec = split (full_name, '.');
+  return name_vec.back();
 }
 
 }  // namespace ada
