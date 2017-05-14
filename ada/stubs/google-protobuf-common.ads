@@ -32,20 +32,21 @@
 -- implementation common.h.  This package is maintained for code aesthetics
 --
 
-with Google.Protobuf.common_h; use Google.Protobuf.common_h;
+with Google.Protobuf.Binding.common_h;
 
 package Google.Protobuf.Common is
 
-  Google_Protobuf_Version : constant := common_h.GOOGLE_PROTOBUF_VERSION;
+  Google_Protobuf_Version : constant :=
+    Google.Protobuf.Binding.common_h.GOOGLE_PROTOBUF_VERSION;
 
   Google_Protobuf_Version_Suffix : constant String :=
-    common_h.GOOGLE_PROTOBUF_VERSION_SUFFIX;
+    Google.Protobuf.Binding.common_h.GOOGLE_PROTOBUF_VERSION_SUFFIX;
 
   Google_Protobuf_Min_Library_Version : constant :=
-    common_h.GOOGLE_PROTOBUF_MIN_LIBRARY_VERSION;
+    Google.Protobuf.Binding.common_h.GOOGLE_PROTOBUF_MIN_LIBRARY_VERSION;
 
   Google_Protobuf_Min_Protoc_Version : constant :=
-    common_h.GOOGLE_PROTOBUF_MIN_PROTOC_VERSION;
+    Google.Protobuf.Binding.common_h.GOOGLE_PROTOBUF_MIN_PROTOC_VERSION;
 
   -- ===================================================================
   -- Shutdown support.

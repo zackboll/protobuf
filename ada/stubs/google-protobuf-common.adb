@@ -31,7 +31,7 @@ package body Google.Protobuf.Common is
 
   procedure Shutdown_Protobuf_Library is
   begin
-    Google.Protobuf.common_h.ShutdownProtobufLibrary;
+    Google.Protobuf.Binding.common_h.ShutdownProtobufLibrary;
   end Shutdown_Protobuf_Library;
 
 end Google.Protobuf.Common;

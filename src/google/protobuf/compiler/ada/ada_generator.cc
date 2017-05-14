@@ -106,7 +106,7 @@ bool AdaGenerator::Generate(const FileDescriptor* file,
 
   // Generate Ada package specification
 
-  basename.append(".pb");
+  //basename.append(".pb");
 	  
   {
     google::protobuf::scoped_ptr<io::ZeroCopyOutputStream> output(

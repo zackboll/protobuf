@@ -7,7 +7,6 @@ project ProtoBuf is
   GNATLIST     := "gnatls";
   GNAT         := "gnat";
   Debugger     := "gdb";
-  C_Compiler   := "gcc";
   Cxx_Compiler := "g++";
 
   CPP_Flags := ("-E", "-std=c++11");
@@ -30,7 +29,6 @@ project ProtoBuf is
 
   package IDE is
     for Compiler_Command ("Ada") use GNATMAKE;
-    for Compiler_Command ("C") use C_Compiler;
     for Compiler_Command ("C++") use Cxx_Compiler;
     for Gnatlist use GNATLIST;
     for Gnat use GNAT;
@@ -54,9 +52,11 @@ project ProtoBuf is
                        "../src/google/protobuf/stubs", 
                        ".",
                        "binding",
+                       "binding/io",
+                       "binding/stubs",
                        "io",
                        "stubs",
                        "temp");
-  --for Object_Dir use "obj";
+  for Object_Dir use "obj";
 
 end ProtoBuf;
