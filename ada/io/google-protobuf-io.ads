@@ -28,10 +28,14 @@
 -- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 with Google.Protobuf.Binding.coded_stream_h;
+with Google.Protobuf.Binding.zero_copy_stream_h;
 
 package Google.Protobuf.IO is
 
-  subtype CodedInputStream is Google.Protobuf.Binding.coded_stream_h.
+  subtype Zero_Copy_Input_Stream is Google.Protobuf.Binding.zero_copy_stream_h.
+    Class_ZeroCopyInputStream.ZeroCopyInputStream;
+
+  subtype Coded_Input_Stream is Google.Protobuf.Binding.coded_stream_h.
     Class_CodedInputStream.CodedInputStream;
 
 end Google.Protobuf.IO;

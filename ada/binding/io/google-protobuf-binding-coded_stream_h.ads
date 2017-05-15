@@ -9,6 +9,7 @@ with Interfaces.C.Extensions;
 --  with google.protobuf.binding.cpp_6_2_1_bits_stl_pair_h;
 with google.protobuf.binding.stddef_h;
 with google.protobuf.binding.google_protobuf_stubs_atomicops_h;
+with google.protobuf.binding.zero_copy_stream_h;
 
 with Interfaces_CPP.Strings;
 
@@ -382,7 +383,7 @@ package google.protobuf.binding.coded_stream_h is
       type CodedInputStream is limited record
          buffer_u : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:535
          buffer_end_u : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:536
-         input_u : System.Address;  -- ../../../../src/google/protobuf/io/coded_stream.h:537
+         input_u : access google.Protobuf.Binding.zero_copy_stream_h.Class_ZeroCopyInputStream.ZeroCopyInputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:537
          total_bytes_read_u : aliased int;  -- ../../../../src/google/protobuf/io/coded_stream.h:538
          overflow_bytes_u : aliased int;  -- ../../../../src/google/protobuf/io/coded_stream.h:543
          last_tag_u : aliased google.protobuf.binding.google_protobuf_stubs_port_h.uint32;  -- ../../../../src/google/protobuf/io/coded_stream.h:546
@@ -399,7 +400,7 @@ package google.protobuf.binding.coded_stream_h is
       end record;
       pragma Import (CPP, CodedInputStream);
 
-      function New_CodedInputStream (input : System.Address) return CodedInputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:1387
+      function New_CodedInputStream (input : not null access google.Protobuf.Binding.zero_copy_stream_h.Class_ZeroCopyInputStream.ZeroCopyInputStream) return CodedInputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:1387
       pragma CPP_Constructor (New_CodedInputStream, "_ZN6google8protobuf2io16CodedInputStreamC1EPNS1_19ZeroCopyInputStreamE");
 
       function New_CodedInputStream (buffer : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8; size : int) return CodedInputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:1408

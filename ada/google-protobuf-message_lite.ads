@@ -27,6 +27,7 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 -- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+with Google.Protobuf.IO;
 
 package Google.Protobuf.Message_Lite is
 
@@ -108,6 +109,87 @@ package Google.Protobuf.Message_Lite is
   -- Returns false on a read error or if the input is in the wrong format.  A
   -- successful return does not indicate the entire input is consumed, ensure
   -- you call ConsumedEntireMessage() to check that if applicable.
+  function Parse_From_Coded_Stream
+    (Msg   : not null access Message_Lite;
+     Input : not null access Google.Protobuf.IO.Coded_Input_Stream)
+     return Boolean;
+
+  -- Like ParseFromCodedStream(), but accepts messages that are missing
+  -- required fields.
+  function Parse_Partial_From_Coded_Stream
+    (Msg   : not null access Message_Lite;
+     Input : not null access Google.Protobuf.IO.Coded_Input_Stream)
+     return Boolean;
+
+  -- Read a protocol buffer from the given zero-copy input stream.  If
+  -- successful, the entire input will be consumed.
+  function Parse_From_Zero_Copy_Stream
+    (Msg   : not null access Message_Lite;
+     Input : not null access Google.Protobuf.IO.Zero_Copy_Input_Stream)
+     return Boolean;
+
+  -- Like ParseFromZeroCopyStream(), but accepts messages that are missing
+  -- required fields.
+  function Parse_Partial_From_Zero_Copy_Stream
+    (Msg   : not null access Message_Lite;
+     Input : not null access Google.Protobuf.IO.Zero_Copy_Input_Stream)
+     return Boolean;
+
+  -- Read a protocol buffer from the given zero-copy input stream, expecting
+  -- the message to be exactly "size" bytes long.  If successful, exactly
+  -- this many bytes will have been consumed from the input.
+  function Parse_From_Bounded_Zero_Copy_Stream
+    (Msg   : not null access Message_Lite;
+     Input : not null access Google.Protobuf.IO.Zero_Copy_Input_Stream;
+     Size  : Integer) return Boolean;
+
+  -- Like ParseFromBoundedZeroCopyStream(), but accepts messages that are
+  -- missing required fields.
+  function Parse_Partial_From_Bounded_Zero_Copy_Stream
+    (Msg   : not null access Message_Lite;
+     Input : not null access Google.Protobuf.IO.Zero_Copy_Input_Stream;
+     Size  : Integer) return Boolean;
+
+  -- Parses a protocol buffer contained in a string. Returns true on success.
+  -- This function takes a string in the (non-human-readable) binary wire
+  -- format, matching the encoding output by MessageLite::SerializeToString().
+  -- If you'd like to convert a human-readable string into a protocol buffer
+  -- object, see google::protobuf::TextFormat::ParseFromString().
+  function Parse_From_String
+    (Msg  : not null access Message_Lite;
+     Data : String) return Boolean;
+
+  -- Like ParseFromString(), but accepts messages that are missing
+  -- required fields.
+  function Parse_From_Partial_String
+    (Msg  : not null access Message_Lite;
+     Data : String) return Boolean;
+
+  -- Reads a protocol buffer from the stream and merges it into this
+  -- Message.  Singular fields read from the input overwrite what is
+  -- already in the Message and repeated fields are appended to those
+  -- already present.
+  --
+  -- It is the responsibility of the caller to call input->LastTagWas()
+  -- (for groups) or input->ConsumedEntireMessage() (for non-groups) after
+  -- this returns to verify that the message's end was delimited correctly.
+  --
+  -- ParsefromCodedStream() is implemented as Clear() followed by
+  -- MergeFromCodedStream().
+  function Merge_From_Coded_Stream
+    (Msg   : not null access Message_Lite;
+     Input : not null access Google.Protobuf.IO.Coded_Input_Stream)
+     return Boolean;
+
+  -- Like MergeFromCodedStream(), but succeeds even if required fields are
+  -- missing in the input.
+  --
+  -- MergeFromCodedStream() is just implemented as MergePartialFromCodedStream()
+  -- followed by IsInitialized().
+  function Merge_Partial_From_Coded_Stream
+    (Msg   : not null access Message_Lite;
+     Input : not null access Google.Protobuf.IO.Coded_Input_Stream)
+    return Boolean is abstract;
 
 private
 
