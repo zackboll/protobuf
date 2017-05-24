@@ -1,0 +1,17 @@
+-- this is externally built library used solely for linking
+library project ProtoBuf_CPP_Runtime is
+
+  Protobuf_Base_Path := external ("PROTOBUF_BASE_PATH", "/usr/local");
+
+  Protobuf_Include_Path := Protobuf_Base_Path & "/include/google/protobuf";
+
+  Protobuf_Lib_Path := Protobuf_Base_Path & "/lib";
+
+  for Languages use ("C++");
+  for Source_Dirs use (Protobuf_Include_Path);
+  for Library_Dir use Protobuf_Lib_Path;
+  for Library_Kind use "dynamic";
+  for Library_Name use "protobuf";
+  for Externally_Built use "true";
+
+end Protobuf_CPP_Runtime;
