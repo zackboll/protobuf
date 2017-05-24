@@ -29,4 +29,6 @@
 
 package Google.Protobuf.Unknown_Field_Set is
 
+  procedure Do_Nothing;
+
 end Google.Protobuf.Unknown_Field_Set;

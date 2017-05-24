@@ -403,7 +403,7 @@ package google.protobuf.binding.coded_stream_h is
       function New_CodedInputStream (input : not null access google.Protobuf.Binding.zero_copy_stream_h.Class_ZeroCopyInputStream.ZeroCopyInputStream) return CodedInputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:1387
       pragma CPP_Constructor (New_CodedInputStream, "_ZN6google8protobuf2io16CodedInputStreamC1EPNS1_19ZeroCopyInputStreamE");
 
-      function New_CodedInputStream (buffer : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8; size : int) return CodedInputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:1408
+      function New_CodedInputStream (buffer : access constant google.protobuf.binding.google_protobuf_stubs_port_h.uint8; size : int) return CodedInputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:1408
       pragma CPP_Constructor (New_CodedInputStream, "_ZN6google8protobuf2io16CodedInputStreamC1EPKhi");
 
       procedure Delete_CodedInputStream (this : access CodedInputStream);  -- ../../../../src/google/protobuf/io/coded_stream.h:179
@@ -789,7 +789,7 @@ package google.protobuf.binding.coded_stream_h is
   -- Compile-time equivalent of VarintSize32().
    package Class_CodedOutputStream is
       type CodedOutputStream is limited record
-         output_u : System.Address;  -- ../../../../src/google/protobuf/io/coded_stream.h:874
+         output_u : access google.Protobuf.binding.zero_copy_stream_h.Class_ZeroCopyOutputStream.ZeroCopyOutputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:874
          buffer_u : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:875
          buffer_size_u : aliased int;  -- ../../../../src/google/protobuf/io/coded_stream.h:876
          total_bytes_u : aliased int;  -- ../../../../src/google/protobuf/io/coded_stream.h:877
@@ -800,7 +800,7 @@ package google.protobuf.binding.coded_stream_h is
       end record;
       pragma Import (CPP, CodedOutputStream);
 
-      function New_CodedOutputStream (output : System.Address) return CodedOutputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:694
+      function New_CodedOutputStream (output : access google.Protobuf.binding.zero_copy_stream_h.Class_ZeroCopyOutputStream.ZeroCopyOutputStream) return CodedOutputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:694
       pragma CPP_Constructor (New_CodedOutputStream, "_ZN6google8protobuf2io17CodedOutputStreamC1EPNS1_20ZeroCopyOutputStreamE");
 
       function New_CodedOutputStream (output : System.Address; do_eager_refresh : Extensions.bool) return CodedOutputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:695

@@ -27,9 +27,14 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 -- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+with Google.Protobuf.Arena;
 with Google.Protobuf.IO;
+with Google.Protobuf.Port;
 
-package Google.Protobuf.Message_Lite is
+with Ada.Finalization;
+with Interfaces.C;
+
+package Google.Protobuf.Messages_Lite is
 
   -- Interface to light weight protocol messages.
   --
@@ -54,10 +59,10 @@ package Google.Protobuf.Message_Lite is
   -- is best when you only have a small number of message types linked
   -- into your binary, in which case the size of the protocol buffers
   -- runtime itself is the biggest problem.
-  type Message_Lite is abstract tagged private;
+  type Message_Lite is abstract new Ada.Finalization.Controlled with private;
 
-  procedure Initialize (Msg : in out Message_Lite) is null;
-  procedure Finalize   (Msg : in out Message_Lite) is abstract;
+  overriding procedure Initialize (Msg : in out Message_Lite) is null;
+  overriding procedure Finalize   (Msg : in out Message_Lite) is null;
 
   -- Basic Operations ------------------------------------------------
 
@@ -70,12 +75,35 @@ package Google.Protobuf.Message_Lite is
   function New_Message (Msg : not null access constant Message_Lite)
                         return access Message_Lite is abstract;
 
+  -- Construct a new instance on the arena. Ownership is passed to the caller
+  -- if arena is a NULL. Default implementation for backwards compatibility.
+  --
+  -- Since the Ada implementation is to dynamically dispatch to the abstract
+  -- routine "New_Message", the concrete implementation cannot be provided
+  -- here per Ada LRM rules and must be provided by the first non-abstract
+  -- derivation of this class.
+  function New_Message (Msg   : not null access constant Message_Lite;
+                        Arena : access Google.Protobuf.Arena.Arena)
+    return access Message_Lite is abstract;
+
   -- Get the arena, if any, associated with this message. Virtual method
   -- required for generic operations but most arena-related operations should
   -- use the GetArenaNoVirtual() generated-code method. Default implementation
   -- to reduce code size by avoiding the need for per-type implementations when
   -- types do not implement arena support.
   -- :TODO: Implement for Ada
+  --virtual ::google::protobuf::Arena* GetArena() const { return NULL; }
+
+  -- Get a pointer that may be equal to this message's arena, or may not be. If
+  -- the value returned by this method is equal to some arena pointer, then this
+  -- message is on that arena; however, if this message is on some arena, this
+  -- method may or may not return that arena's pointer. As a tradeoff, this
+  -- method may be more efficient than GetArena(). The intent is to allow
+  -- underlying representations that use e.g. tagged pointers to sometimes store
+  -- the arena pointer directly, and sometimes in a more indirect way, and allow
+  -- a fastpath comparison against the arena pointer when it's easy to obtain.
+  -- TODO:
+  --virtual void* GetMaybeArenaPointer() const { return GetArena(); }
 
   -- Clear all fields of the message and set them to their default values.
   -- Clear() avoids freeing memory, assuming that any memory allocated
@@ -92,7 +120,7 @@ package Google.Protobuf.Message_Lite is
   -- determine missing fields for lite message)".  However, it is implemented
   -- for full messages.  See message.h.
   function Initialization_Error_String
-    (Msg: not null access constant Message_Lite) return String is abstract;
+    (Msg: not null access constant Message_Lite) return String;
 
   -- If |other| is the exact same class as this, calls MergeFrom().  Otherwise,
   -- results are undefined (probably crash).
@@ -165,6 +193,18 @@ package Google.Protobuf.Message_Lite is
     (Msg  : not null access Message_Lite;
      Data : String) return Boolean;
 
+  -- Parse a protocol buffer contained in an array of bytes.
+  function Parse_From_Array
+    (Msg : not null access Message_Lite;
+     Data: not null access constant Interfaces.C.char_array) return Boolean;
+
+  -- Like ParseFromArray(), but accepts messages that are missing
+  -- required fields.
+  function Parse_Partial_From_Array
+    (Msg  : not null access Message_Lite;
+     Data : not null access constant Interfaces.C.char_array) return Boolean;
+
+
   -- Reads a protocol buffer from the stream and merges it into this
   -- Message.  Singular fields read from the input overwrite what is
   -- already in the Message and repeated fields are appended to those
@@ -191,8 +231,100 @@ package Google.Protobuf.Message_Lite is
      Input : not null access Google.Protobuf.IO.Coded_Input_Stream)
     return Boolean is abstract;
 
+  -- Serialization ---------------------------------------------------
+  -- Methods for serializing in protocol buffer format.  Most of these
+  -- are just simple wrappers around ByteSize() and SerializeWithCachedSizes().
+
+  -- Write a protocol buffer of this message to the given output.  Returns
+  -- false on a write error.  If the message is missing required fields,
+  -- this may GOOGLE_CHECK-fail.
+  function Serialize_To_Coded_Stream
+    (Msg    : not null access constant Message_Lite;
+     Output : not null access Google.Protobuf.IO.Coded_Output_Stream)
+     return Boolean;
+
+  -- Like SerializeToCodedStream(), but allows missing required fields.
+  function Serialize_Partial_To_Coded_Stream
+    (Msg    : not null access constant Message_Lite;
+     Output : not null access Google.Protobuf.IO.Coded_Output_Stream)
+     return Boolean;
+
+  -- Write the message to the given zero-copy output stream.  All required
+  -- fields must be set.
+  function Serialize_To_Zero_Copy_Stream
+    (Msg    : not null access constant Message_Lite;
+     Output : not null access Google.Protobuf.IO.Zero_Copy_Output_Stream)
+     return Boolean;
+
+  -- Like SerializeToZeroCopyStream(), but allows missing required fields.
+  function Serialize_Partial_To_Zero_Copy_Stream
+    (Msg    : not null access constant Message_Lite;
+     Output : not null access Google.Protobuf.IO.Zero_Copy_Output_Stream)
+     return Boolean;
+
+  --
+  -- For Ada implementation, do not implement the SerializeToString routines
+  -- as it is not clear entirely why this would be useful.
+  -- TODO: Evaluate at later date whether SerializeToString adds value to Ada
+  -- runtime
+  --
+
+
+  -- Computes the serialized size of the message.  This recursively calls
+  -- ByteSizeLong() on all embedded messages.
+  --
+  -- ByteSizeLong() is generally linear in the number of fields defined for the
+  -- proto.
+  function Byte_Size_Long (Msg : not null access constant Message_Lite)
+                           return Interfaces.Unsigned_64 is abstract;
+
+  -- Legacy ByteSize() API.
+  -- TODO:
+  --int ByteSize() const { return internal::ToIntSize(ByteSizeLong()); }
+
+  -- Serializes the message without recomputing the size.  The message must not
+  -- have changed since the last call to ByteSize(), and the value returned by
+  -- ByteSize must be non-negative.  Otherwise the results are undefined.
+  procedure Serialize_With_Cached_Sizes
+    (Msg    : not null access constant Message_Lite;
+     Output : not null access Google.Protobuf.IO.Coded_Output_Stream)
+  is abstract;
+
+  -- Functions below here are not part of the public interface.  It isn't
+  -- enforced, but they should be treated as private, and will be private
+  -- at some future time.  Unfortunately the implementation of the "friend"
+  -- keyword in GCC is broken at the moment, but we expect it will be fixed.
+
+  -- Like SerializeWithCachedSizes, but writes directly to *target, returning
+  -- a pointer to the byte immediately after the last byte written.  "target"
+  -- must point at a byte array of at least ByteSize() bytes.  Whether to use
+  -- deterministic serialization, e.g., maps in sorted order, is determined by
+  -- CodedOutputStream::IsDefaultSerializationDeterministic().
+  -- virtual uint8* SerializeWithCachedSizesToArray(uint8* target) const;
+
+  -- Returns the result of the last call to ByteSize().  An embedded message's
+  -- size is needed both to serialize it (because embedded messages are
+  -- length-delimited) and to compute the outer message's size.  Caching
+  -- the size avoids computing it multiple times.
+  --
+  -- ByteSize() does not automatically use the cached size when available
+  -- because this would require invalidating it every time the message was
+  -- modified, which would be too hard and expensive.  (E.g. if a deeply-nested
+  -- sub-message is changed, all of its parents' cached sizes would need to be
+  -- invalidated, which is too much work for an otherwise inlined setter
+  -- method.)
+  -- TODO:
+  -- virtual int GetCachedSize() const = 0;
+
+  function Internal_Serialize_With_Cached_Sizes_To_Array
+    (Msg           : not null access constant Message_Lite;
+     Deterministic : Boolean;
+     Target        : access Google.Protobuf.Port.uint8)
+     return access Google.Protobuf.Port.uint8 is abstract;
+
 private
 
-  type Message_Lite is abstract tagged null record;
+  type Message_Lite is abstract new Ada.Finalization.Controlled with
+    null record;
 
-end Google.Protobuf.Message_Lite;
+end Google.Protobuf.Messages_Lite;

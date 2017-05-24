@@ -35,7 +35,13 @@ package Google.Protobuf.IO is
   subtype Zero_Copy_Input_Stream is Google.Protobuf.Binding.zero_copy_stream_h.
     Class_ZeroCopyInputStream.ZeroCopyInputStream;
 
+  subtype Zero_Copy_Output_Stream is Google.Protobuf.Binding.zero_copy_stream_h.
+    Class_ZeroCopyOutputStream.ZeroCopyOutputStream;
+
   subtype Coded_Input_Stream is Google.Protobuf.Binding.coded_stream_h.
     Class_CodedInputStream.CodedInputStream;
+
+  subtype Coded_Output_Stream is Google.Protobuf.Binding.coded_stream_h.
+    Class_CodedOutputStream.CodedOutputStream;
 
 end Google.Protobuf.IO;

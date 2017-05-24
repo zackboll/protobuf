@@ -30,41 +30,78 @@
 with Google.Protobuf.Binding.coded_stream_h;
 
 with Ada.Text_IO;
-with Interfaces.C;
 with Interfaces_CPP; use Interfaces_CPP;
+with System.Storage_Elements;
 with Unchecked_Conversion;
 
 
-package body Google.Protobuf.Message_Lite is
+package body Google.Protobuf.Messages_Lite is
 
   --
-  -- Class wide access type used for dynamic dispatching where necessary
+  -- Class wide access types used for dynamic dispatching
   --
   type Class_Wide_Access is access all Message_Lite'class;
+  type Class_Wide_Access_Constant is access constant Message_Lite'class;
 
-  type unsigned_char_access is access all Interfaces.C.unsigned_char;
-  type char_access is access all Interfaces.C.char;
-  function to_uchar_access is new Unchecked_Conversion
-    (Source => char_access, Target => unsigned_char_access);
+  type unsigned_char_access_constant is
+    access constant Interfaces.C.unsigned_char;
+  type char_access_constant is access constant Interfaces.C.char;
 
-  function Initialization_Error_Message (Action : String;
-                                         Msg    : not null access Message_Lite)
-                                         return String is
+  function to_uchar_access_constant is new Unchecked_Conversion
+    (Source => char_access_constant, Target => unsigned_char_access_constant);
+
+
+  function Initialization_Error_String
+    (Msg : not null access constant Message_Lite) return String is
+
+    pragma Unreferenced (Msg);
 
   begin
 
-    -- Note:  We want to avoid depending on strutil in the lite library, otherwise
-    --   we'd use:
+    return "(cannot determine missing fields for lite message)";
+
+  end Initialization_Error_String;
+
+
+-- When serializing, we first compute the byte size, then serialize the message.
+-- If serialization produces a different number of bytes than expected, we
+-- call this function, which crashes.  The problem could be due to a bug in the
+-- protobuf implementation but is more likely caused by concurrent modification
+-- of the message.  This function attempts to distinguish between the two and
+-- provide a useful error message.
+  procedure Byte_Size_Consistency_Error
+    (byte_size_before_serialization  : Interfaces.Unsigned_64;
+     byte_size_after_serialization   : Interfaces.Unsigned_64;
+     bytes_produced_by_serialization : Interfaces.Unsigned_64;
+     message                         : not null access constant Message_Lite) is
+
+    pragma Unreferenced
+      (byte_size_before_serialization,
+       byte_size_after_serialization,
+       bytes_produced_by_serialization,
+       message);
+
+  begin
+
     --
-    -- return strings::Substitute(
-    --   "Can't $0 message of type \"$1\" because it is missing required "
-    --   "fields: $2",
-    --   action, message.GetTypeName(),
-    --   message.InitializationErrorString());
+    -- TODO: Complete, needs binding to Google Log
+    --
+    Ada.Text_IO.Put_Line ("--TODO: Byte_Size_Consistency_Error");
+
+  end Byte_Size_Consistency_Error;
+
+
+  function Initialization_Error_Message
+    (Action : String;
+     Msg    : not null access constant Message_Lite)
+     return String is
+
+  begin
+
     return "Can't " & Action & " message of type """ &
-      Class_Wide_Access (Msg).Get_Type_Name &
+      Class_Wide_Access_Constant (Msg).Get_Type_Name &
       """ because it is missing required fields: " &
-      Class_Wide_Access (Msg).Initialization_Error_String;
+      Class_Wide_Access_Constant (Msg).Initialization_Error_String;
 
   end Initialization_Error_Message;
 
@@ -121,7 +158,7 @@ package body Google.Protobuf.Message_Lite is
 
 
   function Inline_Parse_From_Array
-    (Data    : not null access Interfaces.C.char_array;
+    (Data    : not null access constant Interfaces.C.char_array;
      Message : not null access Message_Lite)
      return Boolean with Inline_Always => True is
 
@@ -131,7 +168,7 @@ package body Google.Protobuf.Message_Lite is
     use Interfaces.C;
 
     Input : aliased Coded_Input_Stream := New_CodedInputStream
-      (buffer => to_uchar_access (Data (Data'first)'access),
+      (buffer => to_uchar_access_constant (Data (Data'first)'access),
        size   => int (Data.all'length));
 
   begin
@@ -144,7 +181,7 @@ package body Google.Protobuf.Message_Lite is
 
 
   function Inline_Parse_Partial_From_Array
-    (Data    : not null access Interfaces.C.char_array;
+    (Data    : not null access constant Interfaces.C.char_array;
      Message : not null access Message_Lite)
      return Boolean with Inline_Always => True is
 
@@ -154,7 +191,7 @@ package body Google.Protobuf.Message_Lite is
     use Interfaces.C;
 
     Input : aliased Coded_Input_Stream := New_CodedInputStream
-      (buffer => to_uchar_access (Data (Data'first)'access),
+      (buffer => to_uchar_access_constant (Data (Data'first)'access),
        size   => int (Data.all'length));
 
   begin
@@ -164,6 +201,20 @@ package body Google.Protobuf.Message_Lite is
       To_Boolean (Class_CodedInputStream.ConsumedEntireMessage (Input'access));
 
   end Inline_Parse_Partial_From_Array;
+
+
+--    function New_Message (Msg   : not null access constant Message_Lite;
+--                          Arena : access Google.Protobuf.Arena.Arena)
+--                          return access Message_Lite is
+--
+--      Message : access Message_Lite :=
+--        Class_Wide_Access_Constant (Msg).New_Message;
+--
+--    begin
+--
+--      return Message;
+--
+--    end New_Message;
 
 
   function Parse_From_Coded_Stream
@@ -286,6 +337,10 @@ package body Google.Protobuf.Message_Lite is
      Data : String) return Boolean is
 
     use Interfaces.C;
+    -- TODO: This is not particularly efficient as we first copy to stack, but
+    -- Strings are fixed length and the elements are non-aliased in Ada
+    -- so not much we can do about String type without first copying it
+    -- due to the implementation of the CodedInputStream type.
     data_array : aliased char_array := To_C (Item => Data, Append_Nul => False);
 
   begin
@@ -300,6 +355,10 @@ package body Google.Protobuf.Message_Lite is
      Data : String) return Boolean is
 
     use Interfaces.C;
+    -- TODO: This is not particularly efficient as we first copy to stack, but
+    -- Strings are fixed length and the elements are non-aliased in Ada
+    -- so not much we can do about String type without first copying it
+    -- due to the implementation of the CodedInputStream type.
     data_array : aliased char_array := To_C (Item => Data, Append_Nul => False);
 
   begin
@@ -308,6 +367,34 @@ package body Google.Protobuf.Message_Lite is
       (Data => data_array'access, Message => Msg);
 
   end Parse_From_Partial_String;
+
+
+  function Parse_From_Array
+    (Msg : not null access Message_Lite;
+     Data: not null access constant Interfaces.C.char_array) return Boolean is
+
+    --
+    -- For efficiency,
+    --
+
+  begin
+
+    return Inline_Parse_From_Array (Data => Data, Message => Msg);
+
+  end Parse_From_Array;
+
+
+  function Parse_Partial_From_Array
+    (Msg  : not null access Message_Lite;
+     Data : not null access constant Interfaces.C.char_array) return Boolean is
+
+  begin
+
+    return Inline_Parse_Partial_From_Array
+      (Data => Data, Message => Msg);
+
+  end Parse_Partial_From_Array;
+
 
   function Merge_From_Coded_Stream
     (Msg   : not null access Message_Lite;
@@ -320,4 +407,161 @@ package body Google.Protobuf.Message_Lite is
 
   end Merge_From_Coded_Stream;
 
-end Google.Protobuf.Message_Lite;
+
+-- ===================================================================
+
+
+  function Serialize_To_Coded_Stream
+    (Msg    : not null access constant Message_Lite;
+     Output : not null access Google.Protobuf.IO.Coded_Output_Stream)
+     return Boolean is
+
+    -- Dispatching instance of message
+    Message : constant Class_Wide_Access_Constant :=
+      Class_Wide_Access_Constant (Msg);
+
+  begin
+
+    --
+    -- TODO: Consider implementing Ada binding to Google log, for now, dump
+    -- error to terminal
+    --
+    if not Message.Is_Initialized then
+
+      Ada.Text_IO.Put_Line
+        (Initialization_Error_Message
+           (Action => "serialize", Msg => Msg));
+
+    end if;
+
+    return Message.Serialize_Partial_To_Coded_Stream (Output);
+
+  end Serialize_To_Coded_Stream;
+
+
+  function Serialize_Partial_To_Coded_Stream
+    (Msg    : not null access constant Message_Lite;
+     Output : not null access Google.Protobuf.IO.Coded_Output_Stream)
+     return Boolean is
+
+    use Interfaces;
+    use Interfaces.C;
+    use Google.Protobuf.Port;
+    use google.Protobuf.Binding.coded_stream_h;
+    use System.Storage_Elements;
+
+    Size : constant Interfaces.Unsigned_64 :=
+      Class_Wide_Access_Constant (Msg).Byte_Size_Long;
+
+    buffer, buffer_end : access uint8;
+
+    original_byte_count, final_byte_count : int;
+
+  begin
+
+    if Size > Interfaces.Unsigned_64 (Integer'last) then
+      -- TODO: Google Log
+      Ada.Text_IO.Put_Line
+        ("Error, Exceeded maximum protobuf size of 2GB: " & Size'img);
+      return False;
+    end if;
+
+    buffer := Class_CodedOutputStream.GetDirectBufferForNBytesAndAdvance
+      (this => Output, size => int (Size));
+
+    if buffer /= null then
+
+      buffer_end := Class_Wide_Access_Constant (Msg).
+        Internal_Serialize_With_Cached_Sizes_To_Array
+          (Deterministic => To_Boolean
+             (Class_CodedOutputStream.IsSerializationDeterministic (output)),
+           Target        => buffer);
+
+      if Unsigned_64 (buffer_end.all'Address - buffer.all'Address) /= Size then
+
+        Byte_Size_Consistency_Error
+          (byte_size_before_serialization => Size,
+           byte_size_after_serialization => Class_Wide_Access_Constant (Msg).
+               Byte_Size_Long,
+           bytes_produced_by_serialization => Unsigned_64
+             (buffer_end.all'address - buffer.all'address),
+           message => Msg);
+
+      end if;
+
+      return True;
+
+    else
+
+      original_byte_count := Class_CodedOutputStream.ByteCount (Output);
+      Class_Wide_Access_Constant (Msg).Serialize_With_Cached_Sizes (Output);
+
+      if To_Boolean (Class_CodedOutputStream.HadError (Output)) then
+        return False;
+      end if;
+
+      final_byte_count := Class_CodedOutputStream.ByteCount (Output);
+
+      if Unsigned_64(final_byte_count - original_byte_count) /= Size then
+
+        Byte_Size_Consistency_Error
+          (byte_size_before_serialization => Size,
+           byte_size_after_serialization => Class_Wide_Access_Constant (Msg).
+               Byte_Size_Long,
+           bytes_produced_by_serialization => Unsigned_64
+             (final_byte_count - original_byte_count),
+           message => Msg);
+
+      end if;
+
+      return True;
+
+    end if;
+
+  end Serialize_Partial_To_Coded_Stream;
+
+
+  function Serialize_To_Zero_Copy_Stream
+    (Msg    : not null access constant Message_Lite;
+     Output : not null access Google.Protobuf.IO.Zero_Copy_Output_Stream)
+     return Boolean is
+
+    use Google.Protobuf.IO;
+    use google.Protobuf.Binding.coded_stream_h;
+
+    Encoder : aliased Coded_Output_Stream :=
+      Class_CodedOutputStream.New_CodedOutputStream (output => Output);
+
+    -- Dispatching message instance
+    Message : constant Class_Wide_Access_Constant :=
+      Class_Wide_Access_Constant (Msg);
+
+  begin
+
+    return Message.Serialize_To_Coded_Stream (Encoder'access);
+
+  end Serialize_To_Zero_Copy_Stream;
+
+
+  function Serialize_Partial_To_Zero_Copy_Stream
+    (Msg    : not null access constant Message_Lite;
+     Output : not null access Google.Protobuf.IO.Zero_Copy_Output_Stream)
+     return Boolean is
+
+    use Google.Protobuf.IO;
+    use Google.Protobuf.Binding.coded_stream_h;
+
+    Encoder : aliased Coded_Output_Stream :=
+      Class_CodedOutputStream.New_CodedOutputStream (Output);
+
+    Message : constant Class_Wide_Access_Constant :=
+      Class_Wide_Access_Constant (Msg);
+
+  begin
+
+    return Message.Serialize_Partial_To_Coded_Stream (Encoder'access);
+
+  end Serialize_Partial_To_Zero_Copy_Stream;
+
+
+end Google.Protobuf.Messages_Lite;

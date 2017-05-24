@@ -146,7 +146,7 @@ package google.protobuf.binding.common_h is
       type FatalException is limited new google.protobuf.binding.cpp_exception.Class_c_exception.c_exception with record
          filename_u : Interfaces.C.Strings.chars_ptr;  -- ../../../src/google/protobuf/stubs/common.h:220
          line_u : aliased int;  -- ../../../src/google/protobuf/stubs/common.h:221
-         message_u : Interfaces_CPP.Strings.CPP_String_External; -- TODO: this is not really the correct type, figure out what to do
+         message_u : System.Address;--Interfaces_CPP.Strings.CPP_String_External; -- TODO: this is not really the correct type, figure out what to do
 --           message_u : aliased google.protobuf.binding.cpp_6_2_1_bits_stringfwd_h.Class_string.string;  -- ../../../src/google/protobuf/stubs/common.h:222
       end record;
       pragma Import (CPP, FatalException);

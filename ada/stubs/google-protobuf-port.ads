@@ -1,5 +1,5 @@
 -- Protocol Buffers - Google's data interchange format
--- https://github.com/zackboll/protobuf
+-- https:  --github.com/zackboll/protobuf
 --
 -- Redistribution and use in source and binary forms, with or without
 -- modification, are permitted provided that the following conditions are
@@ -27,11 +27,10 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 -- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package body Google.Protobuf.Unknown_Field_Set is
+with Google.Protobuf.Binding.google_protobuf_stubs_port_h;
 
-  procedure Do_Nothing is
-  begin
-    null;
-  end Do_Nothing;
+package Google.Protobuf.Port is
 
-end Google.Protobuf.Unknown_Field_Set;
+  subtype uint8 is Google.Protobuf.Binding.google_protobuf_stubs_port_h.uint8;
+
+end Google.Protobuf.Port;

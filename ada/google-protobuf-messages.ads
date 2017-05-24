@@ -1,5 +1,5 @@
 -- Protocol Buffers - Google's data interchange format
--- https://github.com/zackboll/protobuf
+-- https:  --github.com/zackboll/protobuf
 --
 -- Redistribution and use in source and binary forms, with or without
 -- modification, are permitted provided that the following conditions are
@@ -27,11 +27,36 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 -- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package body Google.Protobuf.Unknown_Field_Set is
+with Google.Protobuf.Messages_Lite;
 
-  procedure Do_Nothing is
-  begin
-    null;
-  end Do_Nothing;
+package Google.Protobuf.Messages is
 
-end Google.Protobuf.Unknown_Field_Set;
+  -- Abstract interface for protocol messages.
+  --
+  -- See also MessageLite, which contains most every-day operations.  Message
+  -- adds descriptors and reflection on top of that.
+  --
+  -- The methods of this class that are virtual but not pure-virtual have
+  -- default implementations based on reflection.  Message classes which are
+  -- optimized for speed will want to override these with faster implementations,
+  -- but classes optimized for code size may be happy with keeping them.  See
+  -- the optimize_for option in descriptor.proto.
+  type Message is abstract new Google.Protobuf.Messages_Lite.Message_Lite
+  with private;
+
+  overriding procedure Initialize (Msg : in out Message) is null;
+  overriding procedure Finalize   (Msg : in out Message) is abstract;
+
+  -- Basic Operations ------------------------------------------------
+
+  -- Construct a new instance of the same type.  Ownership is passed to the
+  -- caller.  (This is also defined in MessageLite, but is defined again here
+  -- for return-type covariance.)
+  procedure Do_Nothing;
+
+private
+
+  type Message is abstract new Google.Protobuf.Messages_Lite.Message_Lite
+    with null record;
+
+end Google.Protobuf.Messages;

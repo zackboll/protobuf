@@ -27,6 +27,6 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 -- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package Google.Protobuf.Repeated_Fields is
+package Google.Protobuf.Repeated_Field is
 
-end Google.Protobuf.Repeated_Fields;
+end Google.Protobuf.Repeated_Field;
