@@ -1,7 +1,7 @@
 with "gnatcoll";
-with "interfaces_cpp";
+with "protobuf_ada";
 
-project ProtoBuf is
+project ProtoBuf_Devel is
 
   GNATMAKE     := "gnatmake";
   GNATLIST     := "gnatls";
@@ -9,11 +9,7 @@ project ProtoBuf is
   Debugger     := "gdb";
   Cxx_Compiler := "g++";
 
-  CPP_Flags := ("-E", "-std=c++11");
-
-  Ada_Flags := ("-gnatQ", "-gnatwa", "-gnatwX", "-gnatwB", "-gnatwJ",
-                "-gnatp", "-funswitch-loops", "-fgcse-after-reload",
-                "-fpredictive-commoning", "-gnatn");
+  CPP_Flags := ("-std=c++11");
 
   Linker_Flags := ("-g");
 
@@ -37,26 +33,17 @@ project ProtoBuf is
 
   package Compiler is
     for Default_Switches ("C++") use Compiler'Default_Switches ("C++") & CPP_Flags;
-    for Default_Switches ("Ada") use Compiler'Default_Switches ("Ada") & Ada_Flags;
   end Compiler;
 
   package Linker is
     for Default_Switches ("C++") use Linker_Flags;
-    for Default_Switches ("Ada") use Linker_Flags;
   end Linker;
 
-  for Languages   use ("Ada", "C++");
+  for Languages   use ("C++");
   for Source_Dirs use ("../src/google/protobuf",
                        "../src/google/protobuf/compiler/**", 
                        "../src/google/protobuf/io",
-                       "../src/google/protobuf/stubs", 
-                       ".",
-                       "binding",
-                       "binding/io",
-                       "binding/stubs",
-                       "io",
-                       "stubs",
-                       "temp");
+                       "../src/google/protobuf/stubs");
   for Object_Dir use "obj";
 
-end ProtoBuf;
+end ProtoBuf_Devel;
