@@ -1,32 +1,46 @@
-with "gnatcoll";
-with "interfaces_cpp";
+--with "gnatcoll";
+with "lib_interfaces_cpp";
+with "protobuf_cpp_runtime";
 
 --
 -- Protobuf project file for Ada runtime
 --
-project ProtoBuf_Ada is
+library project ProtoBuf_Ada is
+
+  CPP_Flags := ("-std=c++11");
 
   Ada_Flags := ("-gnatQ", "-gnatwa", "-gnatwX", "-gnatwB", "-gnatwJ",
                 "-gnatp", "-funswitch-loops", "-fgcse-after-reload",
-                "-fpredictive-commoning", "-gnatn");
+                "-fpredictive-commoning", "-gnatn", "-fPIC");
 
-  Linker_Flags := ("-g");
+  Linker_Flags := ("");
 
   package Naming is
     for Casing use "lowercase";
+    for Specification_Suffix ("C++") use ".h";
+    for Implementation_Suffix ("C++") use ".cc";
   end Naming;
+
+  for Library_Name use "protobuf_ada";
+  for Object_Dir use "obj";
+  for Library_Dir use "lib";
+
+  for Library_Kind use "static";
+  --for Library_Kind use "dynamic";
 
   package Compiler is
     for Default_Switches ("Ada") use Compiler'Default_Switches ("Ada") & Ada_Flags;
+    for Default_Switches ("C++") use Compiler'Default_Switches ("C++") & CPP_Flags;
   end Compiler;
 
-  package Linker is
-    for Default_Switches ("Ada") use Linker_Flags;
-  end Linker;
-
-  for Languages   use ("Ada");
+  --for Library_Options use Linker_Flags;
+  for Languages   use ("Ada", "C++");
   for Source_Dirs use (".",
                        "binding",
+                       "binding/c_controlled",
+                       "binding/io",
+                       "binding/std_lib",
+                       "binding/stubs",
                        "io",
                        "stubs");
   for Object_Dir use "obj";
