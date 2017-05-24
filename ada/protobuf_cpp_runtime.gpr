@@ -7,8 +7,15 @@ library project ProtoBuf_CPP_Runtime is
 
   Protobuf_Lib_Path := Protobuf_Base_Path & "/lib";
 
+  package Naming is
+    for Specification_Suffix ("C++") use ".h";
+  end Naming;
+
   for Languages use ("C++");
-  for Source_Dirs use (Protobuf_Include_Path);
+  for Source_Dirs use (Protobuf_Include_Path,
+                       Protobuf_Include_Path & "/io",
+                       Protobuf_Include_Path & "/stubs",
+                       Protobuf_Include_Path & "/util");
   for Library_Dir use Protobuf_Lib_Path;
   for Library_Kind use "dynamic";
   for Library_Name use "protobuf";
