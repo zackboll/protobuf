@@ -54,8 +54,8 @@ package google.protobuf.binding.cpp_typeinfo is
          uu_obj_ptr : System.Address) return Extensions.bool;  -- /tools/x86_64/gnatpro2017/include/c++/6.2.1/typeinfo:167
       pragma Import (CPP, uu_do_upcast, "_ZNKSt9type_info11__do_upcastEPKN10__cxxabiv117__class_type_infoEPPv");
 
-      function New_type_info (uu_n : Interfaces.C.Strings.chars_ptr) return type_info;  -- /tools/x86_64/gnatpro2017/include/c++/6.2.1/typeinfo:173
-      pragma CPP_Constructor (New_type_info, "_ZNSt9type_infoC1EPKc");
+--        function New_type_info (uu_n : Interfaces.C.Strings.chars_ptr) return type_info;  -- /tools/x86_64/gnatpro2017/include/c++/6.2.1/typeinfo:173
+--        pragma CPP_Constructor (New_type_info, "_ZNSt9type_infoC1EPKc");
 
       function operator_as (this : access type_info'Class; arg2 : access constant type_info'Class) return access type_info;  -- /tools/x86_64/gnatpro2017/include/c++/6.2.1/typeinfo:177
       pragma Import (CPP, operator_as, "_ZNSt9type_infoaSERKS_");
