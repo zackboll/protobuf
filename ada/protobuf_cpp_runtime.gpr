@@ -7,6 +7,9 @@ library project ProtoBuf_CPP_Runtime is
 
   Protobuf_Lib_Path := Protobuf_Base_Path & "/lib";
 
+  type Library_Type is ("static", "dynamic");
+  Protobuf_Library_Type : Library_Type := external ("PROTOBUF_LIB_TYPE", "static");
+
   package Naming is
     for Specification_Suffix ("C++") use ".h";
   end Naming;
@@ -17,7 +20,7 @@ library project ProtoBuf_CPP_Runtime is
                        Protobuf_Include_Path & "/stubs",
                        Protobuf_Include_Path & "/util");
   for Library_Dir use Protobuf_Lib_Path;
-  for Library_Kind use "dynamic";
+  for Library_Kind use Protobuf_Library_Type;
   for Library_Name use "protobuf";
   for Externally_Built use "true";
 
