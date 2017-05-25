@@ -167,7 +167,7 @@ package body Google.Protobuf.Messages_Lite is
     use Google.Protobuf.Binding.coded_stream_h.Class_CodedInputStream;
     use Interfaces.C;
 
-    Input : aliased Coded_Input_Stream := New_CodedInputStream
+    Input : aliased Coded_Input_Stream := New_CodedInputStream2
       (buffer => to_uchar_access_constant (Data (Data'first)'access),
        size   => int (Data.all'length));
 
@@ -190,7 +190,7 @@ package body Google.Protobuf.Messages_Lite is
     use Google.Protobuf.Binding.coded_stream_h.Class_CodedInputStream;
     use Interfaces.C;
 
-    Input : aliased Coded_Input_Stream := New_CodedInputStream
+    Input : aliased Coded_Input_Stream := New_CodedInputStream2
       (buffer => to_uchar_access_constant (Data (Data'first)'access),
        size   => int (Data.all'length));
 
@@ -201,20 +201,6 @@ package body Google.Protobuf.Messages_Lite is
       To_Boolean (Class_CodedInputStream.ConsumedEntireMessage (Input'access));
 
   end Inline_Parse_Partial_From_Array;
-
-
---    function New_Message (Msg   : not null access constant Message_Lite;
---                          Arena : access Google.Protobuf.Arena.Arena)
---                          return access Message_Lite is
---
---      Message : access Message_Lite :=
---        Class_Wide_Access_Constant (Msg).New_Message;
---
---    begin
---
---      return Message;
---
---    end New_Message;
 
 
   function Parse_From_Coded_Stream
