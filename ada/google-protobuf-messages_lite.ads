@@ -67,13 +67,15 @@ package Google.Protobuf.Messages_Lite is
   -- Basic Operations ------------------------------------------------
 
   -- Get the name of this message type, e.g. "foo.bar.BazProto".
-  function Get_Type_Name (Msg: not null access constant Message_Lite)
-                          return String is abstract;
+  not overriding function Get_Type_Name
+    (Msg: not null access constant Message_Lite)
+     return String is abstract;
 
   -- Construct a new instance of the same type.  Ownership is passed to the
   -- caller.
-  function New_Message (Msg : not null access constant Message_Lite)
-                        return access Message_Lite is abstract;
+  not overriding function New_Message
+    (Msg : not null access constant Message_Lite)
+     return access Message_Lite is abstract;
 
   -- Construct a new instance on the arena. Ownership is passed to the caller
   -- if arena is a NULL. Default implementation for backwards compatibility.
@@ -82,49 +84,42 @@ package Google.Protobuf.Messages_Lite is
   -- routine "New_Message", the concrete implementation cannot be provided
   -- here per Ada LRM rules and must be provided by the first non-abstract
   -- derivation of this class.
-  function New_Message (Msg   : not null access constant Message_Lite;
-                        Arena : access Google.Protobuf.Arena.Arena)
-    return access Message_Lite is abstract;
+  not overriding function New_Message
+    (Msg   : not null access constant Message_Lite;
+     Arena : access Google.Protobuf.Arena.Arena)
+     return access Message_Lite is abstract;
 
   -- Get the arena, if any, associated with this message. Virtual method
   -- required for generic operations but most arena-related operations should
   -- use the GetArenaNoVirtual() generated-code method. Default implementation
   -- to reduce code size by avoiding the need for per-type implementations when
   -- types do not implement arena support.
-  -- :TODO: Implement for Ada
-  --virtual ::google::protobuf::Arena* GetArena() const { return NULL; }
-
-  -- Get a pointer that may be equal to this message's arena, or may not be. If
-  -- the value returned by this method is equal to some arena pointer, then this
-  -- message is on that arena; however, if this message is on some arena, this
-  -- method may or may not return that arena's pointer. As a tradeoff, this
-  -- method may be more efficient than GetArena(). The intent is to allow
-  -- underlying representations that use e.g. tagged pointers to sometimes store
-  -- the arena pointer directly, and sometimes in a more indirect way, and allow
-  -- a fastpath comparison against the arena pointer when it's easy to obtain.
-  -- TODO:
-  --virtual void* GetMaybeArenaPointer() const { return GetArena(); }
+  not overriding function Get_Arena
+    (Msg  : not null access constant Message_Lite)
+     return access Google.Protobuf.Arena.Arena is (null);
 
   -- Clear all fields of the message and set them to their default values.
   -- Clear() avoids freeing memory, assuming that any memory allocated
   -- to hold parts of the message will be needed again to hold the next
   -- message.  If you actually want to free the memory used by a Message,
   -- you must delete it.
-  procedure Clear (Msg: not null access Message_Lite) is abstract;
+  not overriding procedure Clear
+    (Msg: not null access Message_Lite) is abstract;
 
   -- Quickly check if all required fields have values set.
-  function Is_Initialized (Msg: not null access constant Message_Lite)
-                           return Boolean is abstract;
+  not overriding function Is_Initialized
+    (Msg: not null access constant Message_Lite)
+     return Boolean is abstract;
 
   -- This is not implemented for Lite messages -- it just returns "(cannot
   -- determine missing fields for lite message)".  However, it is implemented
   -- for full messages.  See message.h.
-  function Initialization_Error_String
+  not overriding function Initialization_Error_String
     (Msg: not null access constant Message_Lite) return String;
 
   -- If |other| is the exact same class as this, calls MergeFrom().  Otherwise,
   -- results are undefined (probably crash).
-  procedure Check_Type_And_Merge_From
+  not overriding procedure Check_Type_And_Merge_From
     (Msg   : not null access Message_Lite;
      Other : not null access constant Message_Lite) is abstract;
 
@@ -137,28 +132,28 @@ package Google.Protobuf.Messages_Lite is
   -- Returns false on a read error or if the input is in the wrong format.  A
   -- successful return does not indicate the entire input is consumed, ensure
   -- you call ConsumedEntireMessage() to check that if applicable.
-  function Parse_From_Coded_Stream
+  not overriding function Parse_From_Coded_Stream
     (Msg   : not null access Message_Lite;
      Input : not null access Google.Protobuf.IO.Coded_Input_Stream)
      return Boolean;
 
   -- Like ParseFromCodedStream(), but accepts messages that are missing
   -- required fields.
-  function Parse_Partial_From_Coded_Stream
+  not overriding function Parse_Partial_From_Coded_Stream
     (Msg   : not null access Message_Lite;
      Input : not null access Google.Protobuf.IO.Coded_Input_Stream)
      return Boolean;
 
   -- Read a protocol buffer from the given zero-copy input stream.  If
   -- successful, the entire input will be consumed.
-  function Parse_From_Zero_Copy_Stream
+  not overriding function Parse_From_Zero_Copy_Stream
     (Msg   : not null access Message_Lite;
      Input : not null access Google.Protobuf.IO.Zero_Copy_Input_Stream)
      return Boolean;
 
   -- Like ParseFromZeroCopyStream(), but accepts messages that are missing
   -- required fields.
-  function Parse_Partial_From_Zero_Copy_Stream
+  not overriding function Parse_Partial_From_Zero_Copy_Stream
     (Msg   : not null access Message_Lite;
      Input : not null access Google.Protobuf.IO.Zero_Copy_Input_Stream)
      return Boolean;
@@ -166,14 +161,14 @@ package Google.Protobuf.Messages_Lite is
   -- Read a protocol buffer from the given zero-copy input stream, expecting
   -- the message to be exactly "size" bytes long.  If successful, exactly
   -- this many bytes will have been consumed from the input.
-  function Parse_From_Bounded_Zero_Copy_Stream
+  not overriding function Parse_From_Bounded_Zero_Copy_Stream
     (Msg   : not null access Message_Lite;
      Input : not null access Google.Protobuf.IO.Zero_Copy_Input_Stream;
      Size  : Integer) return Boolean;
 
   -- Like ParseFromBoundedZeroCopyStream(), but accepts messages that are
   -- missing required fields.
-  function Parse_Partial_From_Bounded_Zero_Copy_Stream
+  not overriding function Parse_Partial_From_Bounded_Zero_Copy_Stream
     (Msg   : not null access Message_Lite;
      Input : not null access Google.Protobuf.IO.Zero_Copy_Input_Stream;
      Size  : Integer) return Boolean;
@@ -183,24 +178,24 @@ package Google.Protobuf.Messages_Lite is
   -- format, matching the encoding output by MessageLite::SerializeToString().
   -- If you'd like to convert a human-readable string into a protocol buffer
   -- object, see google::protobuf::TextFormat::ParseFromString().
-  function Parse_From_String
+  not overriding function Parse_From_String
     (Msg  : not null access Message_Lite;
      Data : String) return Boolean;
 
   -- Like ParseFromString(), but accepts messages that are missing
   -- required fields.
-  function Parse_From_Partial_String
+  not overriding function Parse_From_Partial_String
     (Msg  : not null access Message_Lite;
      Data : String) return Boolean;
 
   -- Parse a protocol buffer contained in an array of bytes.
-  function Parse_From_Array
+  not overriding function Parse_From_Array
     (Msg : not null access Message_Lite;
      Data: not null access constant Interfaces.C.char_array) return Boolean;
 
   -- Like ParseFromArray(), but accepts messages that are missing
   -- required fields.
-  function Parse_Partial_From_Array
+  not overriding function Parse_Partial_From_Array
     (Msg  : not null access Message_Lite;
      Data : not null access constant Interfaces.C.char_array) return Boolean;
 
@@ -216,7 +211,7 @@ package Google.Protobuf.Messages_Lite is
   --
   -- ParsefromCodedStream() is implemented as Clear() followed by
   -- MergeFromCodedStream().
-  function Merge_From_Coded_Stream
+  not overriding function Merge_From_Coded_Stream
     (Msg   : not null access Message_Lite;
      Input : not null access Google.Protobuf.IO.Coded_Input_Stream)
      return Boolean;
@@ -226,7 +221,7 @@ package Google.Protobuf.Messages_Lite is
   --
   -- MergeFromCodedStream() is just implemented as MergePartialFromCodedStream()
   -- followed by IsInitialized().
-  function Merge_Partial_From_Coded_Stream
+  not overriding function Merge_Partial_From_Coded_Stream
     (Msg   : not null access Message_Lite;
      Input : not null access Google.Protobuf.IO.Coded_Input_Stream)
     return Boolean is abstract;
@@ -238,26 +233,26 @@ package Google.Protobuf.Messages_Lite is
   -- Write a protocol buffer of this message to the given output.  Returns
   -- false on a write error.  If the message is missing required fields,
   -- this may GOOGLE_CHECK-fail.
-  function Serialize_To_Coded_Stream
+  not overriding function Serialize_To_Coded_Stream
     (Msg    : not null access constant Message_Lite;
      Output : not null access Google.Protobuf.IO.Coded_Output_Stream)
      return Boolean;
 
   -- Like SerializeToCodedStream(), but allows missing required fields.
-  function Serialize_Partial_To_Coded_Stream
+  not overriding function Serialize_Partial_To_Coded_Stream
     (Msg    : not null access constant Message_Lite;
      Output : not null access Google.Protobuf.IO.Coded_Output_Stream)
      return Boolean;
 
   -- Write the message to the given zero-copy output stream.  All required
   -- fields must be set.
-  function Serialize_To_Zero_Copy_Stream
+  not overriding function Serialize_To_Zero_Copy_Stream
     (Msg    : not null access constant Message_Lite;
      Output : not null access Google.Protobuf.IO.Zero_Copy_Output_Stream)
      return Boolean;
 
   -- Like SerializeToZeroCopyStream(), but allows missing required fields.
-  function Serialize_Partial_To_Zero_Copy_Stream
+  not overriding function Serialize_Partial_To_Zero_Copy_Stream
     (Msg    : not null access constant Message_Lite;
      Output : not null access Google.Protobuf.IO.Zero_Copy_Output_Stream)
      return Boolean;
@@ -275,17 +270,14 @@ package Google.Protobuf.Messages_Lite is
   --
   -- ByteSizeLong() is generally linear in the number of fields defined for the
   -- proto.
-  function Byte_Size_Long (Msg : not null access constant Message_Lite)
-                           return Interfaces.Unsigned_64 is abstract;
-
-  -- Legacy ByteSize() API.
-  -- TODO:
-  --int ByteSize() const { return internal::ToIntSize(ByteSizeLong()); }
+  not overriding function Byte_Size_Long
+    (Msg : not null access constant Message_Lite)
+     return Interfaces.Unsigned_64 is abstract;
 
   -- Serializes the message without recomputing the size.  The message must not
   -- have changed since the last call to ByteSize(), and the value returned by
   -- ByteSize must be non-negative.  Otherwise the results are undefined.
-  procedure Serialize_With_Cached_Sizes
+  not overriding procedure Serialize_With_Cached_Sizes
     (Msg    : not null access constant Message_Lite;
      Output : not null access Google.Protobuf.IO.Coded_Output_Stream)
   is abstract;
@@ -313,10 +305,11 @@ package Google.Protobuf.Messages_Lite is
   -- sub-message is changed, all of its parents' cached sizes would need to be
   -- invalidated, which is too much work for an otherwise inlined setter
   -- method.)
-  -- TODO:
-  -- virtual int GetCachedSize() const = 0;
+  not overriding function Get_Cached_Size
+    (Msg : not null access constant Message_Lite)
+     return Integer is abstract;
 
-  function Internal_Serialize_With_Cached_Sizes_To_Array
+  not overriding function Internal_Serialize_With_Cached_Sizes_To_Array
     (Msg           : not null access constant Message_Lite;
      Deterministic : Boolean;
      Target        : access Google.Protobuf.Port.uint8)
