@@ -29,10 +29,19 @@
 
 package body Google.Protobuf.Messages is
 
-  procedure Do_Nothing is
-  begin
-    null;
-  end Do_Nothing;
+  --
+  -- Class wide access types used for dynamic dispatching
+  --
+  type Class_Wide_Access is access all Message'class;
+  type Class_Wide_Access_Constant is access constant Message'class;
 
+  procedure Copy_From (Msg  : not null access Message;
+                        From : not null access constant Message) is
+
+  begin
+
+    null;
+
+  end Copy_From;
 
 end Google.Protobuf.Messages;

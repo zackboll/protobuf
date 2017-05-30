@@ -27,6 +27,7 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 -- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+with Google.Protobuf.Arena;
 with Google.Protobuf.Messages_Lite;
 
 package Google.Protobuf.Messages is
@@ -52,7 +53,27 @@ package Google.Protobuf.Messages is
   -- Construct a new instance of the same type.  Ownership is passed to the
   -- caller.  (This is also defined in MessageLite, but is defined again here
   -- for return-type covariance.)
-  procedure Do_Nothing;
+  overriding function New_Message (Msg: not null access constant Message)
+                                   return access Message is abstract;
+
+  -- Construct a new instance on the arena. Ownership is passed to the caller
+  -- if arena is a NULL. Default implementation allows for API compatibility
+  -- during the Arena transition.
+  --
+  -- Since the Ada implementation is to dynamically dispatch to the abstract
+  -- routine "New_Message", the concrete implementation cannot be provided
+  -- here per Ada LRM rules and must be provided by the first non-abstract
+  -- derivation of this class.
+  overriding function New_Message
+    (Msg   : not null access constant Message;
+     Arena : access Google.Protobuf.Arena.Arena)
+     return access Message is abstract;
+
+  -- Make this message into a copy of the given message.  The given message
+  -- must have the same descriptor, but need not necessarily be the same class.
+  -- By default this is just implemented as "Clear(); MergeFrom(from);".
+  not overriding procedure Copy_From (Msg  : not null access Message;
+                                      From : not null access constant Message);
 
 private
 
