@@ -5,14 +5,14 @@ with Interfaces.C; use Interfaces.C;
 with System;
 with google.protobuf.binding.stddef_h;
 with Interfaces.C.Strings;
-with google.protobuf.binding.google_protobuf_stubs_port_h;
+with google.protobuf.binding.port_h;
 limited with google.protobuf.binding.cpp_typeinfo;
-with google.protobuf.binding.google_protobuf_stubs_atomicops_h;
+with google.protobuf.binding.atomicops_h;
 with Interfaces.C.Extensions;
-with google.protobuf.binding.google_protobuf_stubs_mutex_h;
+with google.protobuf.binding.mutex_h;
 --  with google.protobuf.binding.cpp_6_2_1_bits_stl_pair_h;
 --  with google.protobuf.binding.google_protobuf_stubs_template_util_h;
-with google.protobuf.binding.google_protobuf_stubs_atomic_sequence_num_h;
+with google.protobuf.binding.atomic_sequence_num_h;
 
 package google.protobuf.binding.arena_h is
 
@@ -37,14 +37,14 @@ package google.protobuf.binding.arena_h is
          on_arena_reset : access procedure
               (arg1 : System.Address;
                arg2 : System.Address;
-               arg3 : google.protobuf.binding.google_protobuf_stubs_port_h.uint64);  -- ../../../src/google/protobuf/arena.h:136
+               arg3 : google.protobuf.binding.port_h.uint64);  -- ../../../src/google/protobuf/arena.h:136
          on_arena_destruction : access procedure
               (arg1 : System.Address;
                arg2 : System.Address;
-               arg3 : google.protobuf.binding.google_protobuf_stubs_port_h.uint64);  -- ../../../src/google/protobuf/arena.h:137
+               arg3 : google.protobuf.binding.port_h.uint64);  -- ../../../src/google/protobuf/arena.h:137
          on_arena_allocation : access procedure
               (arg1 : access constant google.protobuf.binding.cpp_typeinfo.Class_type_info.type_info;
-               arg2 : google.protobuf.binding.google_protobuf_stubs_port_h.uint64;
+               arg2 : google.protobuf.binding.port_h.uint64;
                arg3 : System.Address);  -- ../../../src/google/protobuf/arena.h:145
       end record;
       pragma Import (CPP, ArenaOptions);
@@ -74,7 +74,7 @@ package google.protobuf.binding.arena_h is
    end record;
    pragma Convention (C_Pass_By_Copy, Block);
    type ThreadCache is record
-      last_lifecycle_id_seen : aliased google.protobuf.binding.google_protobuf_stubs_port_h.int64;  -- ../../../src/google/protobuf/arena.h:569
+      last_lifecycle_id_seen : aliased google.protobuf.binding.port_h.int64;  -- ../../../src/google/protobuf/arena.h:569
       last_block_used_u : access Block;  -- ../../../src/google/protobuf/arena.h:570
    end record;
    pragma Convention (C_Pass_By_Copy, ThreadCache);
@@ -90,13 +90,13 @@ package google.protobuf.binding.arena_h is
    pragma Convention (C_Pass_By_Copy, Node);
    package Class_Arena is
       type Arena is limited record
-         lifecycle_id_u : aliased google.protobuf.binding.google_protobuf_stubs_port_h.int64;  -- ../../../src/google/protobuf/arena.h:908
-         blocks_u : aliased google.protobuf.binding.google_protobuf_stubs_atomicops_h.AtomicWord;  -- ../../../src/google/protobuf/arena.h:910
-         hint_u : aliased google.protobuf.binding.google_protobuf_stubs_atomicops_h.AtomicWord;  -- ../../../src/google/protobuf/arena.h:911
-         space_allocated_u : aliased google.protobuf.binding.google_protobuf_stubs_port_h.uint64;  -- ../../../src/google/protobuf/arena.h:912
-         cleanup_list_u : aliased google.protobuf.binding.google_protobuf_stubs_atomicops_h.AtomicWord;  -- ../../../src/google/protobuf/arena.h:922
+         lifecycle_id_u : aliased google.protobuf.binding.port_h.int64;  -- ../../../src/google/protobuf/arena.h:908
+         blocks_u : aliased google.protobuf.binding.atomicops_h.AtomicWord;  -- ../../../src/google/protobuf/arena.h:910
+         hint_u : aliased google.protobuf.binding.atomicops_h.AtomicWord;  -- ../../../src/google/protobuf/arena.h:911
+         space_allocated_u : aliased google.protobuf.binding.port_h.uint64;  -- ../../../src/google/protobuf/arena.h:912
+         cleanup_list_u : aliased google.protobuf.binding.atomicops_h.AtomicWord;  -- ../../../src/google/protobuf/arena.h:922
          owns_first_block_u : aliased Extensions.bool;  -- ../../../src/google/protobuf/arena.h:925
-         blocks_lock_u : aliased google.protobuf.binding.google_protobuf_stubs_mutex_h.Class_Mutex.Mutex;  -- ../../../src/google/protobuf/arena.h:926
+         blocks_lock_u : aliased google.protobuf.binding.mutex_h.Class_Mutex.Mutex;  -- ../../../src/google/protobuf/arena.h:926
          hooks_cookie_u : System.Address;  -- ../../../src/google/protobuf/arena.h:942
          options_u : aliased ArenaOptions;  -- ../../../src/google/protobuf/arena.h:944
       end record;
@@ -111,16 +111,16 @@ package google.protobuf.binding.arena_h is
       procedure Delete_Arena (this : access Arena);  -- ../../../src/google/protobuf/arena.h:242
       pragma Import (CPP, Delete_Arena, "_ZN6google8protobuf5ArenaD1Ev");
 
-      function SpaceAllocated (this : access constant Arena) return google.protobuf.binding.google_protobuf_stubs_port_h.uint64;  -- ../../../src/google/protobuf/arena.h:466
+      function SpaceAllocated (this : access constant Arena) return google.protobuf.binding.port_h.uint64;  -- ../../../src/google/protobuf/arena.h:466
       pragma Import (CPP, SpaceAllocated, "_ZNK6google8protobuf5Arena14SpaceAllocatedEv");
 
-      function SpaceUsed (this : access constant Arena) return google.protobuf.binding.google_protobuf_stubs_port_h.uint64;  -- ../../../src/google/protobuf/arena.h:471
+      function SpaceUsed (this : access constant Arena) return google.protobuf.binding.port_h.uint64;  -- ../../../src/google/protobuf/arena.h:471
       pragma Import (CPP, SpaceUsed, "_ZNK6google8protobuf5Arena9SpaceUsedEv");
 
 --        function SpaceAllocatedAndUsed (this : access constant Arena) return google.protobuf.binding.cpp_6_2_1_bits_stl_pair_h.Class_pair.pair;  -- ../../../src/google/protobuf/arena.h:476
 --        pragma Import (CPP, SpaceAllocatedAndUsed, "_ZNK6google8protobuf5Arena21SpaceAllocatedAndUsedEv");
 
-      function Reset (this : access Arena) return google.protobuf.binding.google_protobuf_stubs_port_h.uint64;  -- ../../../src/google/protobuf/arena.h:483
+      function Reset (this : access Arena) return google.protobuf.binding.port_h.uint64;  -- ../../../src/google/protobuf/arena.h:483
       pragma Import (CPP, Reset, "_ZN6google8protobuf5Arena5ResetEv");
 
       procedure OwnCustomDestructor
@@ -141,7 +141,7 @@ package google.protobuf.binding.arena_h is
       procedure Init (this : access Arena);  -- ../../../src/google/protobuf/arena.h:887
       pragma Import (CPP, Init, "_ZN6google8protobuf5Arena4InitEv");
 
-      function FreeBlocks (this : access Arena) return google.protobuf.binding.google_protobuf_stubs_port_h.uint64;  -- ../../../src/google/protobuf/arena.h:891
+      function FreeBlocks (this : access Arena) return google.protobuf.binding.port_h.uint64;  -- ../../../src/google/protobuf/arena.h:891
       pragma Import (CPP, FreeBlocks, "_ZN6google8protobuf5Arena10FreeBlocksEv");
 
       procedure AddListNode
@@ -153,7 +153,7 @@ package google.protobuf.binding.arena_h is
       procedure CleanupList (this : access Arena);  -- ../../../src/google/protobuf/arena.h:900
       pragma Import (CPP, CleanupList, "_ZN6google8protobuf5Arena11CleanupListEv");
 
-      function ResetInternal (this : access Arena) return google.protobuf.binding.google_protobuf_stubs_port_h.uint64;  -- ../../../src/google/protobuf/arena.h:901
+      function ResetInternal (this : access Arena) return google.protobuf.binding.port_h.uint64;  -- ../../../src/google/protobuf/arena.h:901
       pragma Import (CPP, ResetInternal, "_ZN6google8protobuf5Arena13ResetInternalEv");
 
       procedure SetThreadCacheBlock (this : access Arena; the_block : access Block);  -- ../../../src/google/protobuf/arena.h:903
@@ -309,7 +309,7 @@ package google.protobuf.binding.arena_h is
       kHeaderSize : aliased google.protobuf.binding.stddef_h.size_t;  -- ../../../src/google/protobuf/arena.h:573
       pragma Import (CPP, kHeaderSize, "_ZN6google8protobuf5Arena11kHeaderSizeE");
 
-      lifecycle_id_generator_u : aliased google.protobuf.binding.google_protobuf_stubs_atomic_sequence_num_h.Class_SequenceNumber.SequenceNumber;  -- ../../../src/google/protobuf/arena.h:574
+      lifecycle_id_generator_u : aliased google.protobuf.binding.atomic_sequence_num_h.Class_SequenceNumber.SequenceNumber;  -- ../../../src/google/protobuf/arena.h:574
       pragma Import (CPP, lifecycle_id_generator_u, "_ZN6google8protobuf5Arena23lifecycle_id_generator_E");
 
       thread_cache_u : aliased ThreadCache;  -- ../../../src/google/protobuf/arena.h:585

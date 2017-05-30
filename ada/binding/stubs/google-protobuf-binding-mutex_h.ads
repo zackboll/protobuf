@@ -3,7 +3,7 @@ pragma Style_Checks (Off);
 
 with System;
 
-package google.protobuf.binding.google_protobuf_stubs_mutex_h is
+package google.protobuf.binding.mutex_h is
 
 --     type Mutex;
    type Internal is null record;
@@ -69,4 +69,4 @@ package google.protobuf.binding.google_protobuf_stubs_mutex_h is
       pragma Import (CPP, operator_as, "_ZN6google8protobuf8internal14MutexLockMaybeaSERKS2_");
    end;
    use Class_MutexLockMaybe;
-end google.protobuf.binding.google_protobuf_stubs_mutex_h;
+end google.protobuf.binding.mutex_h;
