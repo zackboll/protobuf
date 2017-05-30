@@ -27,10 +27,10 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 -- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-with Google.Protobuf.Binding.google_protobuf_stubs_port_h;
+with Google.Protobuf.Binding.port_h;
 
 package Google.Protobuf.Port is
 
-  subtype uint8 is Google.Protobuf.Binding.google_protobuf_stubs_port_h.uint8;
+  subtype uint8 is Google.Protobuf.Binding.port_h.uint8;
 
 end Google.Protobuf.Port;

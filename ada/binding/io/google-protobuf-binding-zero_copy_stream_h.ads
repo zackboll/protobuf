@@ -4,7 +4,7 @@ pragma Style_Checks (Off);
 with Interfaces.C; use Interfaces.C;
 with System;
 with Interfaces.C.Extensions;
-with google.protobuf.binding.google_protobuf_stubs_port_h;
+with google.protobuf.binding.port_h;
 
 package google.protobuf.binding.zero_copy_stream_h is
 
@@ -29,7 +29,7 @@ package google.protobuf.binding.zero_copy_stream_h is
 
       function Skip (this : access ZeroCopyInputStream; count : int) return Extensions.bool is abstract;  -- ../../../../src/google/protobuf/io/zero_copy_stream.h:169
 
-      function ByteCount (this : access constant ZeroCopyInputStream) return google.protobuf.binding.google_protobuf_stubs_port_h.int64 is abstract;  -- ../../../../src/google/protobuf/io/zero_copy_stream.h:172
+      function ByteCount (this : access constant ZeroCopyInputStream) return google.protobuf.binding.port_h.int64 is abstract;  -- ../../../../src/google/protobuf/io/zero_copy_stream.h:172
 
       procedure operator_as (this : access ZeroCopyInputStream'Class; arg2 : access constant ZeroCopyInputStream'Class);  -- ../../../../src/google/protobuf/io/zero_copy_stream.h:176
       pragma Import (CPP, operator_as, "_ZN6google8protobuf2io19ZeroCopyInputStreamaSERKS2_");
@@ -55,7 +55,7 @@ package google.protobuf.binding.zero_copy_stream_h is
 
       procedure BackUp (this : access ZeroCopyOutputStream; count : int) is abstract;  -- ../../../../src/google/protobuf/io/zero_copy_stream.h:224
 
-      function ByteCount (this : access constant ZeroCopyOutputStream) return google.protobuf.binding.google_protobuf_stubs_port_h.int64 is abstract;  -- ../../../../src/google/protobuf/io/zero_copy_stream.h:227
+      function ByteCount (this : access constant ZeroCopyOutputStream) return google.protobuf.binding.port_h.int64 is abstract;  -- ../../../../src/google/protobuf/io/zero_copy_stream.h:227
 
       function WriteAliasedRaw
         (this : access ZeroCopyOutputStream;

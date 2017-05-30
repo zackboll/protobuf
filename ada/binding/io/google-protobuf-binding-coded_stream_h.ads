@@ -2,13 +2,13 @@ pragma Ada_2005;
 pragma Style_Checks (Off);
 
 with Interfaces.C; use Interfaces.C;
-with google.protobuf.binding.google_protobuf_stubs_port_h;
+with google.protobuf.binding.port_h;
 with System;
 with Interfaces.C.Extensions;
 --  limited with google.protobuf.binding.cpp_6_2_1_bits_stringfwd_h;
 --  with google.protobuf.binding.cpp_6_2_1_bits_stl_pair_h;
 with google.protobuf.binding.stddef_h;
-with google.protobuf.binding.google_protobuf_stubs_atomicops_h;
+with google.protobuf.binding.atomicops_h;
 with google.protobuf.binding.zero_copy_stream_h;
 
 with Interfaces_CPP.Strings;
@@ -23,12 +23,12 @@ package google.protobuf.binding.coded_stream_h is
   
    package Class_CodedInputStream is
       type CodedInputStream is limited record
-         buffer_u : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:535
-         buffer_end_u : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:536
+         buffer_u : access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:535
+         buffer_end_u : access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:536
          input_u : access google.Protobuf.Binding.zero_copy_stream_h.Class_ZeroCopyInputStream.ZeroCopyInputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:537
          total_bytes_read_u : aliased int;  -- ../../../../src/google/protobuf/io/coded_stream.h:538
          overflow_bytes_u : aliased int;  -- ../../../../src/google/protobuf/io/coded_stream.h:543
-         last_tag_u : aliased google.protobuf.binding.google_protobuf_stubs_port_h.uint32;  -- ../../../../src/google/protobuf/io/coded_stream.h:546
+         last_tag_u : aliased google.protobuf.binding.port_h.uint32;  -- ../../../../src/google/protobuf/io/coded_stream.h:546
          legitimate_message_end_u : aliased Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:551
          aliasing_enabled_u : aliased Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:554
          current_limit_u : aliased Limit;  -- ../../../../src/google/protobuf/io/coded_stream.h:557
@@ -45,7 +45,7 @@ package google.protobuf.binding.coded_stream_h is
       function New_CodedInputStream (input : not null access google.Protobuf.Binding.zero_copy_stream_h.Class_ZeroCopyInputStream.ZeroCopyInputStream) return CodedInputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:1387
       pragma CPP_Constructor (New_CodedInputStream, "_ZN6google8protobuf2io16CodedInputStreamC1EPNS1_19ZeroCopyInputStreamE");
 
-      function New_CodedInputStream2 (buffer : access constant google.protobuf.binding.google_protobuf_stubs_port_h.uint8; size : int) return CodedInputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:1408
+      function New_CodedInputStream2 (buffer : access constant google.protobuf.binding.port_h.uint8; size : int) return CodedInputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:1408
       pragma CPP_Constructor (New_CodedInputStream2, "_ZN6google8protobuf2io16CodedInputStreamC1EPKhi");
 
       procedure Delete_CodedInputStream (this : access CodedInputStream);  -- ../../../../src/google/protobuf/io/coded_stream.h:179
@@ -93,40 +93,40 @@ package google.protobuf.binding.coded_stream_h is
          size : int) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:220
       pragma Import (CPP, InternalReadStringInline, "_ZN6google8protobuf2io16CodedInputStream24InternalReadStringInlineEPNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEi");
 
-      function ReadLittleEndian32 (this : access CodedInputStream; value : access google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:995
+      function ReadLittleEndian32 (this : access CodedInputStream; value : access google.protobuf.binding.port_h.uint32) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:995
       pragma Import (CPP, ReadLittleEndian32, "_ZN6google8protobuf2io16CodedInputStream18ReadLittleEndian32EPj");
 
-      function ReadLittleEndian64 (this : access CodedInputStream; value : access google.protobuf.binding.google_protobuf_stubs_port_h.uint64) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:1008
+      function ReadLittleEndian64 (this : access CodedInputStream; value : access google.protobuf.binding.port_h.uint64) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:1008
       pragma Import (CPP, ReadLittleEndian64, "_ZN6google8protobuf2io16CodedInputStream18ReadLittleEndian64EPm");
 
-      function ReadVarint32 (this : access CodedInputStream; value : access google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:919
+      function ReadVarint32 (this : access CodedInputStream; value : access google.protobuf.binding.port_h.uint32) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:919
       pragma Import (CPP, ReadVarint32, "_ZN6google8protobuf2io16CodedInputStream12ReadVarint32EPj");
 
-      function ReadVarint64 (this : access CodedInputStream; value : access google.protobuf.binding.google_protobuf_stubs_port_h.uint64) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:934
+      function ReadVarint64 (this : access CodedInputStream; value : access google.protobuf.binding.port_h.uint64) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:934
       pragma Import (CPP, ReadVarint64, "_ZN6google8protobuf2io16CodedInputStream12ReadVarint64EPm");
 
       function ReadVarintSizeAsInt (this : access CodedInputStream; value : access int) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:945
       pragma Import (CPP, ReadVarintSizeAsInt, "_ZN6google8protobuf2io16CodedInputStream19ReadVarintSizeAsIntEPi");
 
-      function ReadTag (this : access CodedInputStream) return google.protobuf.binding.google_protobuf_stubs_port_h.uint32;  -- ../../../../src/google/protobuf/io/coded_stream.h:1021
+      function ReadTag (this : access CodedInputStream) return google.protobuf.binding.port_h.uint32;  -- ../../../../src/google/protobuf/io/coded_stream.h:1021
       pragma Import (CPP, ReadTag, "_ZN6google8protobuf2io16CodedInputStream7ReadTagEv");
 
-      function ReadTagNoLastTag (this : access CodedInputStream) return google.protobuf.binding.google_protobuf_stubs_port_h.uint32;  -- ../../../../src/google/protobuf/io/coded_stream.h:1025
+      function ReadTagNoLastTag (this : access CodedInputStream) return google.protobuf.binding.port_h.uint32;  -- ../../../../src/google/protobuf/io/coded_stream.h:1025
       pragma Import (CPP, ReadTagNoLastTag, "_ZN6google8protobuf2io16CodedInputStream16ReadTagNoLastTagEv");
 
---        function ReadTagWithCutoff (this : access CodedInputStream; cutoff : google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return google.protobuf.binding.cpp_6_2_1_bits_stl_pair_h.Class_pair.pair;  -- ../../../../src/google/protobuf/io/coded_stream.h:1049
+--        function ReadTagWithCutoff (this : access CodedInputStream; cutoff : google.protobuf.binding.port_h.uint32) return google.protobuf.binding.cpp_6_2_1_bits_stl_pair_h.Class_pair.pair;  -- ../../../../src/google/protobuf/io/coded_stream.h:1049
 --        pragma Import (CPP, ReadTagWithCutoff, "_ZN6google8protobuf2io16CodedInputStream17ReadTagWithCutoffEj");
 
---        function ReadTagWithCutoffNoLastTag (this : access CodedInputStream; cutoff : google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return google.protobuf.binding.cpp_6_2_1_bits_stl_pair_h.Class_pair.pair;  -- ../../../../src/google/protobuf/io/coded_stream.h:1054
+--        function ReadTagWithCutoffNoLastTag (this : access CodedInputStream; cutoff : google.protobuf.binding.port_h.uint32) return google.protobuf.binding.cpp_6_2_1_bits_stl_pair_h.Class_pair.pair;  -- ../../../../src/google/protobuf/io/coded_stream.h:1054
 --        pragma Import (CPP, ReadTagWithCutoffNoLastTag, "_ZN6google8protobuf2io16CodedInputStream26ReadTagWithCutoffNoLastTagEj");
 
-      function ExpectTag (this : access CodedInputStream; expected : google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:1119
+      function ExpectTag (this : access CodedInputStream; expected : google.protobuf.binding.port_h.uint32) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:1119
       pragma Import (CPP, ExpectTag, "_ZN6google8protobuf2io16CodedInputStream9ExpectTagEj");
 
       function ExpectAtEnd (this : access CodedInputStream) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:1163
       pragma Import (CPP, ExpectAtEnd, "_ZN6google8protobuf2io16CodedInputStream11ExpectAtEndEv");
 
-      function LastTagWas (this : access CodedInputStream; expected : google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:1111
+      function LastTagWas (this : access CodedInputStream; expected : google.protobuf.binding.port_h.uint32) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:1111
       pragma Import (CPP, LastTagWas, "_ZN6google8protobuf2io16CodedInputStream10LastTagWasEj");
 
       function ConsumedEntireMessage (this : access CodedInputStream) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:1115
@@ -208,7 +208,7 @@ package google.protobuf.binding.coded_stream_h is
       function Refresh (this : access CodedInputStream) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:602
       pragma Import (CPP, Refresh, "_ZN6google8protobuf2io16CodedInputStream7RefreshEv");
 
-      function ReadVarint32Fallback (this : access CodedInputStream; first_byte_or_zero : google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return google.protobuf.binding.google_protobuf_stubs_port_h.int64;  -- ../../../../src/google/protobuf/io/coded_stream.h:615
+      function ReadVarint32Fallback (this : access CodedInputStream; first_byte_or_zero : google.protobuf.binding.port_h.uint32) return google.protobuf.binding.port_h.int64;  -- ../../../../src/google/protobuf/io/coded_stream.h:615
       pragma Import (CPP, ReadVarint32Fallback, "_ZN6google8protobuf2io16CodedInputStream20ReadVarint32FallbackEj");
 
       function ReadVarintSizeAsIntFallback (this : access CodedInputStream) return int;  -- ../../../../src/google/protobuf/io/coded_stream.h:616
@@ -217,25 +217,25 @@ package google.protobuf.binding.coded_stream_h is
 --        function ReadVarint64Fallback (this : access CodedInputStream) return google.protobuf.binding.cpp_6_2_1_bits_stl_pair_h.Class_pair.pair;  -- ../../../../src/google/protobuf/io/coded_stream.h:617
 --        pragma Import (CPP, ReadVarint64Fallback, "_ZN6google8protobuf2io16CodedInputStream20ReadVarint64FallbackEv");
 
-      function ReadVarint32Slow (this : access CodedInputStream; value : access google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:618
+      function ReadVarint32Slow (this : access CodedInputStream; value : access google.protobuf.binding.port_h.uint32) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:618
       pragma Import (CPP, ReadVarint32Slow, "_ZN6google8protobuf2io16CodedInputStream16ReadVarint32SlowEPj");
 
-      function ReadVarint64Slow (this : access CodedInputStream; value : access google.protobuf.binding.google_protobuf_stubs_port_h.uint64) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:619
+      function ReadVarint64Slow (this : access CodedInputStream; value : access google.protobuf.binding.port_h.uint64) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:619
       pragma Import (CPP, ReadVarint64Slow, "_ZN6google8protobuf2io16CodedInputStream16ReadVarint64SlowEPm");
 
       function ReadVarintSizeAsIntSlow (this : access CodedInputStream) return int;  -- ../../../../src/google/protobuf/io/coded_stream.h:620
       pragma Import (CPP, ReadVarintSizeAsIntSlow, "_ZN6google8protobuf2io16CodedInputStream23ReadVarintSizeAsIntSlowEv");
 
-      function ReadLittleEndian32Fallback (this : access CodedInputStream; value : access google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:621
+      function ReadLittleEndian32Fallback (this : access CodedInputStream; value : access google.protobuf.binding.port_h.uint32) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:621
       pragma Import (CPP, ReadLittleEndian32Fallback, "_ZN6google8protobuf2io16CodedInputStream26ReadLittleEndian32FallbackEPj");
 
-      function ReadLittleEndian64Fallback (this : access CodedInputStream; value : access google.protobuf.binding.google_protobuf_stubs_port_h.uint64) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:622
+      function ReadLittleEndian64Fallback (this : access CodedInputStream; value : access google.protobuf.binding.port_h.uint64) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:622
       pragma Import (CPP, ReadLittleEndian64Fallback, "_ZN6google8protobuf2io16CodedInputStream26ReadLittleEndian64FallbackEPm");
 
-      function ReadTagFallback (this : access CodedInputStream; first_byte_or_zero : google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return google.protobuf.binding.google_protobuf_stubs_port_h.uint32;  -- ../../../../src/google/protobuf/io/coded_stream.h:633
+      function ReadTagFallback (this : access CodedInputStream; first_byte_or_zero : google.protobuf.binding.port_h.uint32) return google.protobuf.binding.port_h.uint32;  -- ../../../../src/google/protobuf/io/coded_stream.h:633
       pragma Import (CPP, ReadTagFallback, "_ZN6google8protobuf2io16CodedInputStream15ReadTagFallbackEj");
 
-      function ReadTagSlow (this : access CodedInputStream) return google.protobuf.binding.google_protobuf_stubs_port_h.uint32;  -- ../../../../src/google/protobuf/io/coded_stream.h:634
+      function ReadTagSlow (this : access CodedInputStream) return google.protobuf.binding.port_h.uint32;  -- ../../../../src/google/protobuf/io/coded_stream.h:634
       pragma Import (CPP, ReadTagSlow, "_ZN6google8protobuf2io16CodedInputStream11ReadTagSlowEv");
 
       function ReadStringFallback
@@ -248,21 +248,21 @@ package google.protobuf.binding.coded_stream_h is
       pragma Import (CPP, BufferSize, "_ZNK6google8protobuf2io16CodedInputStream10BufferSizeEv");
 
       package Static is
-         function ReadLittleEndian32FromArray (buffer : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8; value : access google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:959
+         function ReadLittleEndian32FromArray (buffer : access google.protobuf.binding.port_h.uint8; value : access google.protobuf.binding.port_h.uint32) return access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:959
          pragma Import (CPP, ReadLittleEndian32FromArray, "_ZN6google8protobuf2io16CodedInputStream27ReadLittleEndian32FromArrayEPKhPj");
 
-         function ReadLittleEndian64FromArray (buffer : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8; value : access google.protobuf.binding.google_protobuf_stubs_port_h.uint64) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:974
+         function ReadLittleEndian64FromArray (buffer : access google.protobuf.binding.port_h.uint8; value : access google.protobuf.binding.port_h.uint64) return access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:974
          pragma Import (CPP, ReadLittleEndian64FromArray, "_ZN6google8protobuf2io16CodedInputStream27ReadLittleEndian64FromArrayEPKhPm");
 
-         function ExpectTagFromArray (buffer : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8; expected : google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1142
+         function ExpectTagFromArray (buffer : access google.protobuf.binding.port_h.uint8; expected : google.protobuf.binding.port_h.uint32) return access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1142
          pragma Import (CPP, ExpectTagFromArray, "_ZN6google8protobuf2io16CodedInputStream18ExpectTagFromArrayEPKhj");
       end;
 
-      function ReadLittleEndian32FromArray (buffer : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8; value : access google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8 renames Static.ReadLittleEndian32FromArray;
+      function ReadLittleEndian32FromArray (buffer : access google.protobuf.binding.port_h.uint8; value : access google.protobuf.binding.port_h.uint32) return access google.protobuf.binding.port_h.uint8 renames Static.ReadLittleEndian32FromArray;
 
-      function ReadLittleEndian64FromArray (buffer : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8; value : access google.protobuf.binding.google_protobuf_stubs_port_h.uint64) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8 renames Static.ReadLittleEndian64FromArray;
+      function ReadLittleEndian64FromArray (buffer : access google.protobuf.binding.port_h.uint8; value : access google.protobuf.binding.port_h.uint64) return access google.protobuf.binding.port_h.uint8 renames Static.ReadLittleEndian64FromArray;
 
-      function ExpectTagFromArray (buffer : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8; expected : google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8 renames Static.ExpectTagFromArray;
+      function ExpectTagFromArray (buffer : access google.protobuf.binding.port_h.uint8; expected : google.protobuf.binding.port_h.uint32) return access google.protobuf.binding.port_h.uint8 renames Static.ExpectTagFromArray;
 
       kDefaultTotalBytesLimit : aliased int;  -- ../../../../src/google/protobuf/io/coded_stream.h:640
       pragma Import (CPP, kDefaultTotalBytesLimit, "_ZN6google8protobuf2io16CodedInputStream23kDefaultTotalBytesLimitE");
@@ -275,7 +275,7 @@ package google.protobuf.binding.coded_stream_h is
    package Class_CodedOutputStream is
       type CodedOutputStream is limited record
          output_u : access google.Protobuf.binding.zero_copy_stream_h.Class_ZeroCopyOutputStream.ZeroCopyOutputStream;  -- ../../../../src/google/protobuf/io/coded_stream.h:874
-         buffer_u : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:875
+         buffer_u : access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:875
          buffer_size_u : aliased int;  -- ../../../../src/google/protobuf/io/coded_stream.h:876
          total_bytes_u : aliased int;  -- ../../../../src/google/protobuf/io/coded_stream.h:877
          had_error_u : aliased Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:878
@@ -306,7 +306,7 @@ package google.protobuf.binding.coded_stream_h is
          size : access int) return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:721
       pragma Import (CPP, GetDirectBufferPointer, "_ZN6google8protobuf2io17CodedOutputStream22GetDirectBufferPointerEPPvPi");
 
-      function GetDirectBufferForNBytesAndAdvance (this : access CodedOutputStream; size : int) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1182
+      function GetDirectBufferForNBytesAndAdvance (this : access CodedOutputStream; size : int) return access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1182
       pragma Import (CPP, GetDirectBufferForNBytesAndAdvance, "_ZN6google8protobuf2io17CodedOutputStream34GetDirectBufferForNBytesAndAdvanceEi");
                                                                                                                                                                            
 
@@ -328,22 +328,22 @@ package google.protobuf.binding.coded_stream_h is
       procedure EnableAliasing (this : access CodedOutputStream; enabled : Extensions.bool);  -- ../../../../src/google/protobuf/io/coded_stream.h:761
       pragma Import (CPP, EnableAliasing, "_ZN6google8protobuf2io17CodedOutputStream14EnableAliasingEb");
 
-      procedure WriteLittleEndian32 (this : access CodedOutputStream; value : google.protobuf.binding.google_protobuf_stubs_port_h.uint32);  -- ../../../../src/google/protobuf/io/coded_stream.h:764
+      procedure WriteLittleEndian32 (this : access CodedOutputStream; value : google.protobuf.binding.port_h.uint32);  -- ../../../../src/google/protobuf/io/coded_stream.h:764
       pragma Import (CPP, WriteLittleEndian32, "_ZN6google8protobuf2io17CodedOutputStream19WriteLittleEndian32Ej");
 
-      procedure WriteLittleEndian64 (this : access CodedOutputStream; value : google.protobuf.binding.google_protobuf_stubs_port_h.uint64);  -- ../../../../src/google/protobuf/io/coded_stream.h:768
+      procedure WriteLittleEndian64 (this : access CodedOutputStream; value : google.protobuf.binding.port_h.uint64);  -- ../../../../src/google/protobuf/io/coded_stream.h:768
       pragma Import (CPP, WriteLittleEndian64, "_ZN6google8protobuf2io17CodedOutputStream19WriteLittleEndian64Em");
 
-      procedure WriteVarint32 (this : access CodedOutputStream; value : google.protobuf.binding.google_protobuf_stubs_port_h.uint32);  -- ../../../../src/google/protobuf/io/coded_stream.h:1256
+      procedure WriteVarint32 (this : access CodedOutputStream; value : google.protobuf.binding.port_h.uint32);  -- ../../../../src/google/protobuf/io/coded_stream.h:1256
       pragma Import (CPP, WriteVarint32, "_ZN6google8protobuf2io17CodedOutputStream13WriteVarint32Ej");
 
-      procedure WriteVarint64 (this : access CodedOutputStream; value : google.protobuf.binding.google_protobuf_stubs_port_h.uint64);  -- ../../../../src/google/protobuf/io/coded_stream.h:1269
+      procedure WriteVarint64 (this : access CodedOutputStream; value : google.protobuf.binding.port_h.uint64);  -- ../../../../src/google/protobuf/io/coded_stream.h:1269
       pragma Import (CPP, WriteVarint64, "_ZN6google8protobuf2io17CodedOutputStream13WriteVarint64Em");
 
-      procedure WriteVarint32SignExtended (this : access CodedOutputStream; value : google.protobuf.binding.google_protobuf_stubs_port_h.int32);  -- ../../../../src/google/protobuf/io/coded_stream.h:1214
+      procedure WriteVarint32SignExtended (this : access CodedOutputStream; value : google.protobuf.binding.port_h.int32);  -- ../../../../src/google/protobuf/io/coded_stream.h:1214
       pragma Import (CPP, WriteVarint32SignExtended, "_ZN6google8protobuf2io17CodedOutputStream25WriteVarint32SignExtendedEi");
 
-      procedure WriteTag (this : access CodedOutputStream; value : google.protobuf.binding.google_protobuf_stubs_port_h.uint32);  -- ../../../../src/google/protobuf/io/coded_stream.h:1282
+      procedure WriteTag (this : access CodedOutputStream; value : google.protobuf.binding.port_h.uint32);  -- ../../../../src/google/protobuf/io/coded_stream.h:1282
       pragma Import (CPP, WriteTag, "_ZN6google8protobuf2io17CodedOutputStream8WriteTagEj");
 
       function ByteCount (this : access constant CodedOutputStream) return int;  -- ../../../../src/google/protobuf/io/coded_stream.h:1337
@@ -373,50 +373,50 @@ package google.protobuf.binding.coded_stream_h is
          size : int);  -- ../../../../src/google/protobuf/io/coded_stream.h:895
       pragma Import (CPP, WriteAliasedRaw, "_ZN6google8protobuf2io17CodedOutputStream15WriteAliasedRawEPKvi");
 
-      procedure WriteVarint32SlowPath (this : access CodedOutputStream; value : google.protobuf.binding.google_protobuf_stubs_port_h.uint32);  -- ../../../../src/google/protobuf/io/coded_stream.h:899
+      procedure WriteVarint32SlowPath (this : access CodedOutputStream; value : google.protobuf.binding.port_h.uint32);  -- ../../../../src/google/protobuf/io/coded_stream.h:899
       pragma Import (CPP, WriteVarint32SlowPath, "_ZN6google8protobuf2io17CodedOutputStream21WriteVarint32SlowPathEj");
 
-      procedure WriteVarint64SlowPath (this : access CodedOutputStream; value : google.protobuf.binding.google_protobuf_stubs_port_h.uint64);  -- ../../../../src/google/protobuf/io/coded_stream.h:900
+      procedure WriteVarint64SlowPath (this : access CodedOutputStream; value : google.protobuf.binding.port_h.uint64);  -- ../../../../src/google/protobuf/io/coded_stream.h:900
       pragma Import (CPP, WriteVarint64SlowPath, "_ZN6google8protobuf2io17CodedOutputStream21WriteVarint64SlowPathEm");
 
       package Static is
          function WriteRawToArray
            (buffer : System.Address;
             size : int;
-            target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:742
+            target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:742
          pragma Import (CPP, WriteRawToArray, "_ZN6google8protobuf2io17CodedOutputStream15WriteRawToArrayEPKviPh");
 
-         function WriteStringToArray (str : Interfaces_CPP.Strings.CPP_String_External; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1332
+         function WriteStringToArray (str : Interfaces_CPP.Strings.CPP_String_External; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1332
          pragma Import (CPP, WriteStringToArray, "_ZN6google8protobuf2io17CodedOutputStream18WriteStringToArrayERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEPh");
 
-         function WriteStringWithSizeToArray (str : Interfaces_CPP.Strings.CPP_String_External; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:749
+         function WriteStringWithSizeToArray (str : Interfaces_CPP.Strings.CPP_String_External; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:749
          pragma Import (CPP, WriteStringWithSizeToArray, "_ZN6google8protobuf2io17CodedOutputStream26WriteStringWithSizeToArrayERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEPh");
 
-         function WriteLittleEndian32ToArray (value : google.protobuf.binding.google_protobuf_stubs_port_h.uint32; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1223
+         function WriteLittleEndian32ToArray (value : google.protobuf.binding.port_h.uint32; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1223
          pragma Import (CPP, WriteLittleEndian32ToArray, "_ZN6google8protobuf2io17CodedOutputStream26WriteLittleEndian32ToArrayEjPh");
 
-         function WriteLittleEndian64ToArray (value : google.protobuf.binding.google_protobuf_stubs_port_h.uint64; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1236
+         function WriteLittleEndian64ToArray (value : google.protobuf.binding.port_h.uint64; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1236
          pragma Import (CPP, WriteLittleEndian64ToArray, "_ZN6google8protobuf2io17CodedOutputStream26WriteLittleEndian64ToArrayEmPh");
 
-         function WriteVarint32ToArray (value : google.protobuf.binding.google_protobuf_stubs_port_h.uint32; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1192
+         function WriteVarint32ToArray (value : google.protobuf.binding.port_h.uint32; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1192
          pragma Import (CPP, WriteVarint32ToArray, "_ZN6google8protobuf2io17CodedOutputStream20WriteVarint32ToArrayEjPh");
 
-         function WriteVarint64ToArray (value : google.protobuf.binding.google_protobuf_stubs_port_h.uint64; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1203
+         function WriteVarint64ToArray (value : google.protobuf.binding.port_h.uint64; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1203
          pragma Import (CPP, WriteVarint64ToArray, "_ZN6google8protobuf2io17CodedOutputStream20WriteVarint64ToArrayEmPh");
 
-         function WriteVarint32SignExtendedToArray (value : google.protobuf.binding.google_protobuf_stubs_port_h.int32; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1218
+         function WriteVarint32SignExtendedToArray (value : google.protobuf.binding.port_h.int32; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1218
          pragma Import (CPP, WriteVarint32SignExtendedToArray, "_ZN6google8protobuf2io17CodedOutputStream32WriteVarint32SignExtendedToArrayEiPh");
 
-         function WriteTagToArray (value : google.protobuf.binding.google_protobuf_stubs_port_h.uint32; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1286
+         function WriteTagToArray (value : google.protobuf.binding.port_h.uint32; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8;  -- ../../../../src/google/protobuf/io/coded_stream.h:1286
          pragma Import (CPP, WriteTagToArray, "_ZN6google8protobuf2io17CodedOutputStream15WriteTagToArrayEjPh");
 
-         function VarintSize32 (value : google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return google.protobuf.binding.stddef_h.size_t;  -- ../../../../src/google/protobuf/io/coded_stream.h:1291
+         function VarintSize32 (value : google.protobuf.binding.port_h.uint32) return google.protobuf.binding.stddef_h.size_t;  -- ../../../../src/google/protobuf/io/coded_stream.h:1291
          pragma Import (CPP, VarintSize32, "_ZN6google8protobuf2io17CodedOutputStream12VarintSize32Ej");
 
-         function VarintSize64 (value : google.protobuf.binding.google_protobuf_stubs_port_h.uint64) return google.protobuf.binding.stddef_h.size_t;  -- ../../../../src/google/protobuf/io/coded_stream.h:1301
+         function VarintSize64 (value : google.protobuf.binding.port_h.uint64) return google.protobuf.binding.stddef_h.size_t;  -- ../../../../src/google/protobuf/io/coded_stream.h:1301
          pragma Import (CPP, VarintSize64, "_ZN6google8protobuf2io17CodedOutputStream12VarintSize64Em");
 
-         function VarintSize32SignExtended (value : google.protobuf.binding.google_protobuf_stubs_port_h.int32) return google.protobuf.binding.stddef_h.size_t;  -- ../../../../src/google/protobuf/io/coded_stream.h:1311
+         function VarintSize32SignExtended (value : google.protobuf.binding.port_h.int32) return google.protobuf.binding.stddef_h.size_t;  -- ../../../../src/google/protobuf/io/coded_stream.h:1311
          pragma Import (CPP, VarintSize32SignExtended, "_ZN6google8protobuf2io17CodedOutputStream24VarintSize32SignExtendedEi");
 
          function IsDefaultSerializationDeterministic return Extensions.bool;  -- ../../../../src/google/protobuf/io/coded_stream.h:867
@@ -429,35 +429,35 @@ package google.protobuf.binding.coded_stream_h is
       function WriteRawToArray
         (buffer : System.Address;
          size : int;
-         target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8 renames Static.WriteRawToArray;
+         target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8 renames Static.WriteRawToArray;
 
-      function WriteStringToArray (str : Interfaces_CPP.Strings.CPP_String_External; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8 renames Static.WriteStringToArray;
+      function WriteStringToArray (str : Interfaces_CPP.Strings.CPP_String_External; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8 renames Static.WriteStringToArray;
 
-      function WriteStringWithSizeToArray (str : Interfaces_CPP.Strings.CPP_String_External; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8 renames Static.WriteStringWithSizeToArray;
+      function WriteStringWithSizeToArray (str : Interfaces_CPP.Strings.CPP_String_External; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8 renames Static.WriteStringWithSizeToArray;
 
-      function WriteLittleEndian32ToArray (value : google.protobuf.binding.google_protobuf_stubs_port_h.uint32; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8 renames Static.WriteLittleEndian32ToArray;
+      function WriteLittleEndian32ToArray (value : google.protobuf.binding.port_h.uint32; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8 renames Static.WriteLittleEndian32ToArray;
 
-      function WriteLittleEndian64ToArray (value : google.protobuf.binding.google_protobuf_stubs_port_h.uint64; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8 renames Static.WriteLittleEndian64ToArray;
+      function WriteLittleEndian64ToArray (value : google.protobuf.binding.port_h.uint64; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8 renames Static.WriteLittleEndian64ToArray;
 
-      function WriteVarint32ToArray (value : google.protobuf.binding.google_protobuf_stubs_port_h.uint32; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8 renames Static.WriteVarint32ToArray;
+      function WriteVarint32ToArray (value : google.protobuf.binding.port_h.uint32; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8 renames Static.WriteVarint32ToArray;
 
-      function WriteVarint64ToArray (value : google.protobuf.binding.google_protobuf_stubs_port_h.uint64; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8 renames Static.WriteVarint64ToArray;
+      function WriteVarint64ToArray (value : google.protobuf.binding.port_h.uint64; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8 renames Static.WriteVarint64ToArray;
 
-      function WriteVarint32SignExtendedToArray (value : google.protobuf.binding.google_protobuf_stubs_port_h.int32; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8 renames Static.WriteVarint32SignExtendedToArray;
+      function WriteVarint32SignExtendedToArray (value : google.protobuf.binding.port_h.int32; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8 renames Static.WriteVarint32SignExtendedToArray;
 
-      function WriteTagToArray (value : google.protobuf.binding.google_protobuf_stubs_port_h.uint32; target : access google.protobuf.binding.google_protobuf_stubs_port_h.uint8) return access google.protobuf.binding.google_protobuf_stubs_port_h.uint8 renames Static.WriteTagToArray;
+      function WriteTagToArray (value : google.protobuf.binding.port_h.uint32; target : access google.protobuf.binding.port_h.uint8) return access google.protobuf.binding.port_h.uint8 renames Static.WriteTagToArray;
 
-      function VarintSize32 (value : google.protobuf.binding.google_protobuf_stubs_port_h.uint32) return google.protobuf.binding.stddef_h.size_t renames Static.VarintSize32;
+      function VarintSize32 (value : google.protobuf.binding.port_h.uint32) return google.protobuf.binding.stddef_h.size_t renames Static.VarintSize32;
 
-      function VarintSize64 (value : google.protobuf.binding.google_protobuf_stubs_port_h.uint64) return google.protobuf.binding.stddef_h.size_t renames Static.VarintSize64;
+      function VarintSize64 (value : google.protobuf.binding.port_h.uint64) return google.protobuf.binding.stddef_h.size_t renames Static.VarintSize64;
 
-      function VarintSize32SignExtended (value : google.protobuf.binding.google_protobuf_stubs_port_h.int32) return google.protobuf.binding.stddef_h.size_t renames Static.VarintSize32SignExtended;
+      function VarintSize32SignExtended (value : google.protobuf.binding.port_h.int32) return google.protobuf.binding.stddef_h.size_t renames Static.VarintSize32SignExtended;
 
       function IsDefaultSerializationDeterministic return Extensions.bool renames Static.IsDefaultSerializationDeterministic;
 
       procedure SetDefaultSerializationDeterministic renames Static.SetDefaultSerializationDeterministic;
 
-      default_serialization_deterministic_u : aliased google.protobuf.binding.google_protobuf_stubs_atomicops_h.AtomicWord;  -- ../../../../src/google/protobuf/io/coded_stream.h:884
+      default_serialization_deterministic_u : aliased google.protobuf.binding.atomicops_h.AtomicWord;  -- ../../../../src/google/protobuf/io/coded_stream.h:884
       pragma Import (CPP, default_serialization_deterministic_u, "_ZN6google8protobuf2io17CodedOutputStream36default_serialization_deterministic_E");
    end;
    use Class_CodedOutputStream;
