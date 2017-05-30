@@ -49,8 +49,8 @@ const std::string kDescriptorMetadataFile =
     "GPBMetadata/Google/Protobuf/Internal/Descriptor.php";
 const std::string kDescriptorDirName = "Google/Protobuf/Internal";
 const std::string kDescriptorPackageName = "Google\\Protobuf\\Internal";
-const char* const kReservedNames[] = {"Empty", "ECHO"};
-const int kReservedNamesSize = 2;
+const char* const kReservedNames[] = {"ARRAY", "Empty", "ECHO"};
+const int kReservedNamesSize = 3;
 
 namespace google {
 namespace protobuf {
@@ -529,6 +529,8 @@ void GenerateFieldAccessor(const FieldDescriptor* field, bool is_descriptor,
         "$this->has_^field_name^ = true;\n",
         "field_name", field->name());
   }
+
+  printer->Print("\nreturn $this;\n");
 
   Outdent(printer);
 

@@ -876,5 +876,19 @@ class GeneratedClassTest extends TestBase
         $m = new \Foo\TestMessage_Empty();
         $m = new \Foo\PBEmpty();
         $m = new \PrefixEmpty();
+        $m = new \Foo\PBARRAY();
+    }
+
+    #########################################################
+    # Test fluent setters.
+    #########################################################
+
+    public function testFluentSetters()
+    {
+        $m = (new TestMessage())
+            ->setOptionalInt32(1)
+            ->setOptionalUInt32(2);
+        $this->assertSame(1, $m->getOptionalInt32());
+        $this->assertSame(2, $m->getOptionalUInt32());
     }
 }
