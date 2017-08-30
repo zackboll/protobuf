@@ -1,3 +1,5 @@
+<?php
+
 // Protocol Buffers - Google's data interchange format
 // Copyright 2008 Google Inc.  All rights reserved.
 // https://developers.google.com/protocol-buffers/
@@ -28,41 +30,60 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Author: seongkim@google.com (Seong Beom Kim)
-//
-// protoc (Protocol Compiler) can generate more efficient code
-// if it knows how a workload accesses fields of a message;
-// e.g. some much more frequently than others.
-//
-// Protos defined here describe the access information per message
-// and per field. Note that one can use any methods to collect
-// the access patterns like CPU profiling, instrumented build, etc.
+namespace Google\Protobuf\Internal;
 
-syntax = "proto2";
+class FileDescriptor
+{
 
-package google.protobuf.compiler;
+    private $package;
+    private $message_type = [];
+    private $enum_type = [];
 
-// To convey the access pattern of a field, it classifies
-// the type of the accessor methods into getters, setters and
-// configs. Getters and setters read and write the field
-// respectively and other operations like checking if the field
-// exists are considered as configs.
-message FieldAccessInfo {
-  optional string name = 1;
-  optional uint64 getters_count = 2;
-  optional uint64 setters_count = 3;
-  optional uint64 configs_count = 4;
-}
+    public function setPackage($package)
+    {
+        $this->package = $package;
+    }
 
-// "count" correlates with how many samples an access info has
-// for a message. High "count" means more confident optimization
-// based on the info.
-message MessageAccessInfo {
-  optional string name = 1;
-  optional uint64 count = 2;
-  repeated FieldAccessInfo field = 3;
-}
+    public function getPackage()
+    {
+        return $this->package;
+    }
 
-message AccessInfo {
-  repeated MessageAccessInfo message = 1;
+    public function getMessageType()
+    {
+        return $this->message_type;
+    }
+
+    public function addMessageType($desc)
+    {
+        $this->message_type[] = $desc;
+    }
+
+    public function getEnumType()
+    {
+        return $this->enum_type;
+    }
+
+    public function addEnumType($desc)
+    {
+        $this->enum_type[]= $desc;
+    }
+
+    public static function buildFromProto($proto)
+    {
+        $file = new FileDescriptor();
+        $file->setPackage($proto->getPackage());
+        foreach ($proto->getMessageType() as $message_proto) {
+            $file->addMessageType(Descriptor::buildFromProto(
+                $message_proto, $proto, ""));
+        }
+        foreach ($proto->getEnumType() as $enum_proto) {
+            $file->addEnumType(
+                EnumDescriptor::buildFromProto(
+                    $enum_proto,
+                    $proto,
+                    ""));
+        }
+        return $file;
+    }
 }

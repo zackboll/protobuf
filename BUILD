@@ -8,14 +8,34 @@ exports_files(["LICENSE"])
 # Protobuf Runtime Library
 ################################################################################
 
-COPTS = [
-    "-DHAVE_PTHREAD",
-    "-Wall",
-    "-Wwrite-strings",
-    "-Woverloaded-virtual",
-    "-Wno-sign-compare",
-    "-Wno-unused-function",
+WIN_COPTS = [
+    "/DHAVE_PTHREAD",
+    "/wd4018", # -Wno-sign-compare
+    "/wd4514", # -Wno-unused-function
 ]
+
+COPTS = select({
+    ":windows" : WIN_COPTS,
+    ":windows_msvc" : WIN_COPTS,
+    "//conditions:default": [
+        "-DHAVE_PTHREAD",
+        "-Wall",
+        "-Wwrite-strings",
+        "-Woverloaded-virtual",
+        "-Wno-sign-compare",
+        "-Wno-unused-function",
+    ],
+})
+
+config_setting(
+    name = "windows",
+    values = { "cpu": "x64_windows" },
+)
+
+config_setting(
+    name = "windows_msvc",
+    values = { "cpu": "x64_windows_msvc" },
+)
 
 config_setting(
     name = "android",
@@ -60,7 +80,7 @@ config_setting(
     },
 )
 
-IOS_ARM_COPTS = COPTS + [
+IOS_ARM_COPTS = [
     "-DOS_IOS",
     "-miphoneos-version-min=7.0",
     "-arch armv7",
@@ -77,6 +97,7 @@ cc_library(
         "src/google/protobuf/arena.cc",
         "src/google/protobuf/arenastring.cc",
         "src/google/protobuf/extension_set.cc",
+        "src/google/protobuf/generated_message_table_driven_lite.cc",
         "src/google/protobuf/generated_message_util.cc",
         "src/google/protobuf/io/coded_stream.cc",
         "src/google/protobuf/io/zero_copy_stream.cc",
@@ -88,6 +109,7 @@ cc_library(
         "src/google/protobuf/stubs/bytestream.cc",
         "src/google/protobuf/stubs/common.cc",
         "src/google/protobuf/stubs/int128.cc",
+        "src/google/protobuf/stubs/io_win32.cc",
         "src/google/protobuf/stubs/once.cc",
         "src/google/protobuf/stubs/status.cc",
         "src/google/protobuf/stubs/statusor.cc",
@@ -103,8 +125,8 @@ cc_library(
         ":ios_armv7": IOS_ARM_COPTS,
         ":ios_armv7s": IOS_ARM_COPTS,
         ":ios_arm64": IOS_ARM_COPTS,
-        "//conditions:default": COPTS,
-    }),
+        "//conditions:default": [],
+    }) + COPTS,
     includes = ["src/"],
     linkopts = LINK_OPTS,
     visibility = ["//visibility:public"],
@@ -128,6 +150,7 @@ cc_library(
         "src/google/protobuf/extension_set_heavy.cc",
         "src/google/protobuf/field_mask.pb.cc",
         "src/google/protobuf/generated_message_reflection.cc",
+        "src/google/protobuf/generated_message_table_driven.cc",
         "src/google/protobuf/io/gzip_stream.cc",
         "src/google/protobuf/io/printer.cc",
         "src/google/protobuf/io/strtod.cc",
@@ -174,8 +197,8 @@ cc_library(
         ":ios_armv7": IOS_ARM_COPTS,
         ":ios_armv7s": IOS_ARM_COPTS,
         ":ios_arm64": IOS_ARM_COPTS,
-        "//conditions:default": COPTS,
-    }),
+        "//conditions:default": [],
+    }) + COPTS,
     includes = ["src/"],
     linkopts = LINK_OPTS,
     visibility = ["//visibility:public"],
@@ -206,7 +229,6 @@ RELATIVE_WELL_KNOWN_PROTOS = [
     "google/protobuf/any.proto",
     "google/protobuf/api.proto",
     "google/protobuf/compiler/plugin.proto",
-    "google/protobuf/compiler/profile.proto",
     "google/protobuf/descriptor.proto",
     "google/protobuf/duration.proto",
     "google/protobuf/empty.proto",
@@ -364,7 +386,6 @@ cc_library(
         "src/google/protobuf/compiler/php/php_generator.cc",
         "src/google/protobuf/compiler/plugin.cc",
         "src/google/protobuf/compiler/plugin.pb.cc",
-        "src/google/protobuf/compiler/profile.pb.cc",
         "src/google/protobuf/compiler/python/python_generator.cc",
         "src/google/protobuf/compiler/ruby/ruby_generator.cc",
         "src/google/protobuf/compiler/subprocess.cc",
@@ -484,6 +505,16 @@ cc_binary(
 )
 
 cc_test(
+    name = "win32_test",
+    srcs = ["src/google/protobuf/stubs/io_win32_unittest.cc"],
+    deps = [
+        ":protobuf_lite",
+        "//external:gtest_main",
+    ],
+    tags = ["manual", "windows"],
+)
+
+cc_test(
     name = "protobuf_test",
     srcs = COMMON_TEST_SRCS + [
         # AUTOGEN(test_srcs)
@@ -492,6 +523,7 @@ cc_test(
         "src/google/protobuf/arenastring_unittest.cc",
         "src/google/protobuf/compiler/command_line_interface_unittest.cc",
         "src/google/protobuf/compiler/cpp/cpp_bootstrap_unittest.cc",
+        "src/google/protobuf/compiler/cpp/cpp_move_unittest.cc",
         "src/google/protobuf/compiler/cpp/cpp_plugin_unittest.cc",
         "src/google/protobuf/compiler/cpp/cpp_unittest.cc",
         "src/google/protobuf/compiler/cpp/metadata_test.cc",
@@ -529,6 +561,7 @@ cc_test(
         "src/google/protobuf/stubs/bytestream_unittest.cc",
         "src/google/protobuf/stubs/common_unittest.cc",
         "src/google/protobuf/stubs/int128_unittest.cc",
+        "src/google/protobuf/stubs/io_win32_unittest.cc",
         "src/google/protobuf/stubs/once_unittest.cc",
         "src/google/protobuf/stubs/status_test.cc",
         "src/google/protobuf/stubs/statusor_test.cc",
@@ -593,7 +626,7 @@ java_library(
     ]) + [
         ":gen_well_known_protos_java",
     ],
-    javacopts = ["-source 6"],
+    javacopts = ["-source 6", "-target 6"],
     visibility = ["//visibility:public"],
 )
 
@@ -602,6 +635,7 @@ java_library(
     srcs = glob([
         "java/util/src/main/java/com/google/protobuf/util/*.java",
     ]),
+    javacopts = ["-source 6", "-target 6"],
     visibility = ["//visibility:public"],
     deps = [
         "protobuf_java",

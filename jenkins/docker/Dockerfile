@@ -129,7 +129,7 @@ ENV MVN mvn --batch-mode
 RUN cd /tmp && \
   git clone https://github.com/google/protobuf.git && \
   cd protobuf && \
-  git reset --hard c2b3b3e04e7a023efe06f2107705b45428847800 && \
+  git reset --hard 129a6e2aca95dcfb6c3e717d7b9cca1f104fde39 && \
   ./autogen.sh && \
   ./configure && \
   make -j4 && \
@@ -145,7 +145,7 @@ RUN mv mirror php-5.5.38.tar.bz2
 RUN tar -xvf php-5.5.38.tar.bz2
 RUN cd php-5.5.38 && ./configure --enable-maintainer-zts --prefix=/usr/local/php-5.5-zts && \
     make && make install && cd ..
-RUN cd php-5.5.38 && make clean && ./configure --prefix=/usr/local/php-5.5 && \
+RUN cd php-5.5.38 && make clean && ./configure --enable-bcmath --prefix=/usr/local/php-5.5 && \
     make && make install && cd ..
 
 RUN wget http://am1.php.net/get/php-5.6.30.tar.bz2/from/this/mirror
@@ -153,7 +153,7 @@ RUN mv mirror php-5.6.30.tar.bz2
 RUN tar -xvf php-5.6.30.tar.bz2
 RUN cd php-5.6.30 && ./configure --enable-maintainer-zts --prefix=/usr/local/php-5.6-zts && \
     make && make install && cd ..
-RUN cd php-5.6.30 && make clean && ./configure --prefix=/usr/local/php-5.6 && \
+RUN cd php-5.6.30 && make clean && ./configure --enable-bcmath --prefix=/usr/local/php-5.6 && \
     make && make install && cd ..
 
 RUN wget http://am1.php.net/get/php-7.0.18.tar.bz2/from/this/mirror
@@ -161,7 +161,15 @@ RUN mv mirror php-7.0.18.tar.bz2
 RUN tar -xvf php-7.0.18.tar.bz2
 RUN cd php-7.0.18 && ./configure --enable-maintainer-zts --prefix=/usr/local/php-7.0-zts && \
     make && make install && cd ..
-RUN cd php-7.0.18 && make clean && ./configure --prefix=/usr/local/php-7.0 && \
+RUN cd php-7.0.18 && make clean && ./configure --enable-bcmath --prefix=/usr/local/php-7.0 && \
+    make && make install && cd ..
+
+RUN wget http://am1.php.net/get/php-7.1.4.tar.bz2/from/this/mirror
+RUN mv mirror php-7.1.4.tar.bz2
+RUN tar -xvf php-7.1.4.tar.bz2
+RUN cd php-7.1.4 && ./configure --enable-maintainer-zts --prefix=/usr/local/php-7.1-zts && \
+    make && make install && cd ..
+RUN cd php-7.1.4 && make clean && ./configure --enable-bcmath --prefix=/usr/local/php-7.1 && \
     make && make install && cd ..
 
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -174,7 +182,7 @@ RUN cd /tmp && \
   rm -rf protobuf && \
   git clone https://github.com/google/protobuf.git && \
   cd protobuf && \
-  git reset --hard 6b27c1f981a9a93918e4039f236ead27165a8e91 && \
+  git reset --hard 49b44bff2b6257a119f9c6a342d6151c736586b8 && \
   cd php && \
   ln -sfn /usr/local/php-5.5/bin/php /usr/bin/php && \
   ln -sfn /usr/local/php-5.5/bin/php-config /usr/bin/php-config && \
@@ -190,7 +198,12 @@ RUN cd /tmp && \
   ln -sfn /usr/local/php-7.0/bin/php-config /usr/bin/php-config && \
   ln -sfn /usr/local/php-7.0/bin/phpize /usr/bin/phpize && \
   composer install && \
-  mv vendor /usr/local/vendor-7.0
+  mv vendor /usr/local/vendor-7.0 && \
+  ln -sfn /usr/local/php-7.1/bin/php /usr/bin/php && \
+  ln -sfn /usr/local/php-7.1/bin/php-config /usr/bin/php-config && \
+  ln -sfn /usr/local/php-7.1/bin/phpize /usr/bin/phpize && \
+  composer install && \
+  mv vendor /usr/local/vendor-7.1
 
 ##################
 # Go dependencies.
@@ -203,6 +216,13 @@ RUN apt-get install -y  \
 RUN apt-get install -y \
   # -- For javascript -- \
   npm
+
+##################
+# Python 3.5 3.6 dependencies.
+RUN apt-get clean && apt-get update && apt-get install -y --force-yes \
+  python3.5-dev \
+  python3.6-dev \
+  && apt-get clean
 
 # On Debian/Ubuntu, nodejs binary is named 'nodejs' because the name 'node'
 # is taken by another legacy binary. We don't have that legacy binary and

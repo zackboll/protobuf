@@ -30,19 +30,20 @@
 
 #include <php.h>
 #include <stdlib.h>
-#include <ext/json/php_json.h>
 
 #include "protobuf.h"
+#include "utf8.h"
 
-static zend_class_entry* message_type;
+zend_class_entry* message_type;
 zend_object_handlers* message_handlers;
+static const char TYPE_URL_PREFIX[] = "type.googleapis.com/";
 
 static  zend_function_entry message_methods[] = {
   PHP_ME(Message, clear, NULL, ZEND_ACC_PUBLIC)
   PHP_ME(Message, serializeToString, NULL, ZEND_ACC_PUBLIC)
   PHP_ME(Message, mergeFromString, NULL, ZEND_ACC_PUBLIC)
-  PHP_ME(Message, jsonEncode, NULL, ZEND_ACC_PUBLIC)
-  PHP_ME(Message, jsonDecode, NULL, ZEND_ACC_PUBLIC)
+  PHP_ME(Message, serializeToJsonString, NULL, ZEND_ACC_PUBLIC)
+  PHP_ME(Message, mergeFromJsonString, NULL, ZEND_ACC_PUBLIC)
   PHP_ME(Message, mergeFrom, NULL, ZEND_ACC_PUBLIC)
   PHP_ME(Message, readOneof, NULL, ZEND_ACC_PROTECTED)
   PHP_ME(Message, writeOneof, NULL, ZEND_ACC_PROTECTED)
@@ -116,7 +117,11 @@ static void message_set_property(zval* object, zval* member, zval* value,
     return;
   }
 
+#if PHP_MAJOR_VERSION < 7 || (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION == 0)
   if (Z_OBJCE_P(object) != EG(scope)) {
+#else
+  if (Z_OBJCE_P(object) != zend_get_executed_scope()) {
+#endif
     // User cannot set property directly (e.g., $m->a = 1)
     zend_error(E_USER_ERROR, "Cannot access private property.");
     return;
@@ -146,7 +151,11 @@ static zval* message_get_property(zval* object, zval* member, int type,
     return PHP_PROTO_GLOBAL_UNINITIALIZED_ZVAL;
   }
 
+#if PHP_MAJOR_VERSION < 7 || (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION == 0)
   if (Z_OBJCE_P(object) != EG(scope)) {
+#else
+  if (Z_OBJCE_P(object) != zend_get_executed_scope()) {
+#endif
     // User cannot get property directly (e.g., $a = $m->a)
     zend_error(E_USER_ERROR, "Cannot access private property.");
     return PHP_PROTO_GLOBAL_UNINITIALIZED_ZVAL;
@@ -165,7 +174,7 @@ static zval* message_get_property(zval* object, zval* member, int type,
       zend_get_property_info(Z_OBJCE_P(object), member, true TSRMLS_CC);
   return layout_get(
       self->descriptor->layout, message_data(self), field,
-      &Z_OBJ_P(object)->properties_table[property_info->offset] TSRMLS_CC);
+      OBJ_PROP(Z_OBJ_P(object), property_info->offset) TSRMLS_CC);
 #else
   property_info =
       zend_get_property_info(Z_OBJCE_P(object), Z_STR_P(member), true);
@@ -215,7 +224,7 @@ void custom_data_init(const zend_class_entry* ce,
   // case a collection happens during object creation in layout_init().
   intern->descriptor = desc;
   layout_init(desc->layout, message_data(intern),
-              intern->std.properties_table PHP_PROTO_TSRMLS_CC);
+              &intern->std PHP_PROTO_TSRMLS_CC);
 }
 
 void build_class_from_descriptor(
@@ -258,8 +267,7 @@ PHP_METHOD(Message, clear) {
   zend_class_entry* ce = desc->klass;
 
   object_properties_init(&msg->std, ce);
-  layout_init(desc->layout, message_data(msg),
-              msg->std.properties_table TSRMLS_CC);
+  layout_init(desc->layout, message_data(msg), &msg->std TSRMLS_CC);
 }
 
 PHP_METHOD(Message, mergeFrom) {
@@ -294,7 +302,8 @@ PHP_METHOD(Message, readOneof) {
 
   int property_cache_index =
       msg->descriptor->layout->fields[upb_fielddef_index(field)].cache_index;
-  zval* property_ptr = OBJ_PROP(Z_OBJ_P(getThis()), property_cache_index);
+  zval* property_ptr = CACHED_PTR_TO_ZVAL_PTR(
+      OBJ_PROP(Z_OBJ_P(getThis()), property_cache_index));
 
   // Unlike singular fields, oneof fields share cached property. So we cannot
   // let lay_get modify the cached property. Instead, we pass in the return
@@ -334,4 +343,277 @@ PHP_METHOD(Message, whichOneof) {
   const char* oneof_case_name = layout_get_oneof_case(
       msg->descriptor->layout, message_data(msg), oneof TSRMLS_CC);
   PHP_PROTO_RETURN_STRING(oneof_case_name, 1);
+}
+
+// -----------------------------------------------------------------------------
+// Any
+// -----------------------------------------------------------------------------
+
+static  zend_function_entry any_methods[] = {
+  PHP_ME(Any, __construct, NULL, ZEND_ACC_PUBLIC)
+  PHP_ME(Any, getTypeUrl, NULL, ZEND_ACC_PUBLIC)
+  PHP_ME(Any, setTypeUrl, NULL, ZEND_ACC_PUBLIC)
+  PHP_ME(Any, getValue, NULL, ZEND_ACC_PUBLIC)
+  PHP_ME(Any, setValue, NULL, ZEND_ACC_PUBLIC)
+  PHP_ME(Any, pack,     NULL, ZEND_ACC_PUBLIC)
+  PHP_ME(Any, unpack,   NULL, ZEND_ACC_PUBLIC)
+  PHP_ME(Any, is,       NULL, ZEND_ACC_PUBLIC)
+  {NULL, NULL, NULL}
+};
+
+zend_class_entry* any_type;
+
+// Init class entry.
+PHP_PROTO_INIT_SUBMSGCLASS_START("Google\\Protobuf\\Any", Any, any)
+  zend_class_implements(any_type TSRMLS_CC, 1, message_type);
+  zend_declare_property_string(any_type, "type_url", strlen("type_url"),
+                               "" ,ZEND_ACC_PRIVATE TSRMLS_CC);
+  zend_declare_property_string(any_type, "value", strlen("value"),
+                               "" ,ZEND_ACC_PRIVATE TSRMLS_CC);
+PHP_PROTO_INIT_SUBMSGCLASS_END
+
+void hex_to_binary(const char* hex, char** binary, int* binary_len) {
+  int i;
+  int hex_len = strlen(hex);
+  *binary_len = hex_len / 2;
+  *binary = ALLOC_N(char, *binary_len);
+  for (i = 0; i < *binary_len; i++) {
+    char value = 0;
+    if (hex[i * 2] >= '0' && hex[i * 2] <= '9') {
+      value += (hex[i * 2] - '0') * 16;
+    } else {
+      value += (hex[i * 2] - 'a' + 10) * 16;
+    }
+    if (hex[i * 2 + 1] >= '0' && hex[i * 2 + 1] <= '9') {
+      value += hex[i * 2 + 1] - '0';
+    } else {
+      value += hex[i * 2 + 1] - 'a' + 10;
+    }
+    (*binary)[i] = value;
+  }
+}
+
+PHP_METHOD(Any, __construct) {
+  PHP_PROTO_HASHTABLE_VALUE desc_php = get_ce_obj(any_type);
+  if (desc_php == NULL) {
+    init_generated_pool_once(TSRMLS_C);
+    const char* generated_file =
+      "0acd010a19676f6f676c652f70726f746f6275662f616e792e70726f746f"
+      "120f676f6f676c652e70726f746f62756622260a03416e7912100a087479"
+      "70655f75726c180120012809120d0a0576616c756518022001280c426f0a"
+      "13636f6d2e676f6f676c652e70726f746f6275664208416e7950726f746f"
+      "50015a256769746875622e636f6d2f676f6c616e672f70726f746f627566"
+      "2f7074797065732f616e79a20203475042aa021e476f6f676c652e50726f"
+      "746f6275662e57656c6c4b6e6f776e5479706573620670726f746f33";
+    char* binary;
+    int binary_len;
+    hex_to_binary(generated_file, &binary, &binary_len);
+
+    internal_add_generated_file(binary, binary_len, generated_pool TSRMLS_CC);
+    FREE(binary);
+  }
+
+  MessageHeader* intern = UNBOX(MessageHeader, getThis());
+  custom_data_init(any_type, intern PHP_PROTO_TSRMLS_CC);
+}
+
+PHP_METHOD(Any, getTypeUrl) {
+  zval member;
+  PHP_PROTO_ZVAL_STRING(&member, "type_url", 1);
+
+  PHP_PROTO_FAKE_SCOPE_BEGIN(any_type);
+#if PHP_MAJOR_VERSION < 7
+  zval* value = message_handlers->read_property(getThis(), &member, BP_VAR_R,
+                                                NULL PHP_PROTO_TSRMLS_CC);
+#else
+  zval* value = message_handlers->read_property(getThis(), &member, BP_VAR_R,
+                                                NULL, NULL PHP_PROTO_TSRMLS_CC);
+#endif
+  PHP_PROTO_FAKE_SCOPE_END;
+
+  PHP_PROTO_RETVAL_ZVAL(value);
+}
+
+PHP_METHOD(Any, setTypeUrl) {
+  char *type_url = NULL;
+  PHP_PROTO_SIZE type_url_len;
+
+  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &type_url,
+                            &type_url_len) == FAILURE) {
+    return;
+  }
+
+  zval member;
+  zval value;
+  PHP_PROTO_ZVAL_STRING(&member, "type_url", 1);
+  PHP_PROTO_ZVAL_STRINGL(&value, type_url, type_url_len, 1);
+
+  PHP_PROTO_FAKE_SCOPE_BEGIN(any_type);
+  message_handlers->write_property(getThis(), &member, &value,
+                                   NULL PHP_PROTO_TSRMLS_CC);
+  PHP_PROTO_FAKE_SCOPE_END;
+
+  PHP_PROTO_RETVAL_ZVAL(getThis());
+}
+
+PHP_METHOD(Any, getValue) {
+  zval member;
+  PHP_PROTO_ZVAL_STRING(&member, "value", 1);
+
+  PHP_PROTO_FAKE_SCOPE_BEGIN(any_type);
+  zval* value =
+      php_proto_message_read_property(getThis(), &member PHP_PROTO_TSRMLS_CC);
+  PHP_PROTO_FAKE_SCOPE_END;
+
+  PHP_PROTO_RETVAL_ZVAL(value);
+}
+
+PHP_METHOD(Any, setValue) {
+  char *value = NULL;
+  PHP_PROTO_SIZE value_len;
+
+  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &value,
+                            &value_len) == FAILURE) {
+    return;
+  }
+
+  zval member;
+  zval value_to_set;
+  PHP_PROTO_ZVAL_STRING(&member, "value", 1);
+  PHP_PROTO_ZVAL_STRINGL(&value_to_set, value, value_len, 1);
+
+  PHP_PROTO_FAKE_SCOPE_BEGIN(any_type);
+  message_handlers->write_property(getThis(), &member, &value_to_set,
+                                   NULL PHP_PROTO_TSRMLS_CC);
+  PHP_PROTO_FAKE_SCOPE_END;
+
+  PHP_PROTO_RETVAL_ZVAL(getThis());
+}
+
+PHP_METHOD(Any, unpack) {
+  // Get type url.
+  zval type_url_member;
+  PHP_PROTO_ZVAL_STRING(&type_url_member, "type_url", 1);
+  PHP_PROTO_FAKE_SCOPE_BEGIN(any_type);
+  zval* type_url_php = php_proto_message_read_property(
+      getThis(), &type_url_member PHP_PROTO_TSRMLS_CC);
+  PHP_PROTO_FAKE_SCOPE_END;
+
+  // Get fully-qualified name from type url.
+  size_t url_prefix_len = strlen(TYPE_URL_PREFIX);
+  const char* type_url = Z_STRVAL_P(type_url_php);
+  size_t type_url_len = Z_STRLEN_P(type_url_php);
+
+  if (url_prefix_len > type_url_len ||
+      strncmp(TYPE_URL_PREFIX, type_url, url_prefix_len) != 0) {
+    zend_throw_exception(
+        NULL, "Type url needs to be type.googleapis.com/fully-qulified",
+        0 TSRMLS_CC);
+    return;
+  }
+
+  const char* fully_qualified_name = type_url + url_prefix_len;
+  PHP_PROTO_HASHTABLE_VALUE desc_php = get_proto_obj(fully_qualified_name);
+  if (desc_php == NULL) {
+    zend_throw_exception(
+        NULL, "Specified message in any hasn't been added to descriptor pool",
+        0 TSRMLS_CC);
+    return;
+  }
+  Descriptor* desc = UNBOX_HASHTABLE_VALUE(Descriptor, desc_php);
+  zend_class_entry* klass = desc->klass;
+  ZVAL_OBJ(return_value, klass->create_object(klass TSRMLS_CC));
+  MessageHeader* msg = UNBOX(MessageHeader, return_value);
+  custom_data_init(klass, msg PHP_PROTO_TSRMLS_CC);
+
+  // Get value.
+  zval value_member;
+  PHP_PROTO_ZVAL_STRING(&value_member, "value", 1);
+  PHP_PROTO_FAKE_SCOPE_RESTART(any_type);
+  zval* value = php_proto_message_read_property(
+      getThis(), &value_member PHP_PROTO_TSRMLS_CC);
+  PHP_PROTO_FAKE_SCOPE_END;
+
+  merge_from_string(Z_STRVAL_P(value), Z_STRLEN_P(value), desc, msg);
+}
+
+PHP_METHOD(Any, pack) {
+  zval* val;
+
+  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "o", &val) ==
+      FAILURE) {
+    return;
+  }
+
+  if (!instanceof_function(Z_OBJCE_P(val), message_type TSRMLS_CC)) {
+    zend_error(E_USER_ERROR, "Given value is not an instance of Message.");
+    return;
+  }
+
+  // Set value by serialized data.
+  zval data;
+  serialize_to_string(val, &data TSRMLS_CC);
+
+  zval member;
+  PHP_PROTO_ZVAL_STRING(&member, "value", 1);
+
+  PHP_PROTO_FAKE_SCOPE_BEGIN(any_type);
+  message_handlers->write_property(getThis(), &member, &data,
+                                   NULL PHP_PROTO_TSRMLS_CC);
+  PHP_PROTO_FAKE_SCOPE_END;
+
+  // Set type url.
+  Descriptor* desc =
+      UNBOX_HASHTABLE_VALUE(Descriptor, get_ce_obj(Z_OBJCE_P(val)));
+  const char* fully_qualified_name = upb_msgdef_fullname(desc->msgdef);
+  size_t type_url_len =
+      strlen(TYPE_URL_PREFIX) + strlen(fully_qualified_name) + 1;
+  char* type_url = ALLOC_N(char, type_url_len);
+  sprintf(type_url, "%s%s", TYPE_URL_PREFIX, fully_qualified_name);
+  zval type_url_php;
+  PHP_PROTO_ZVAL_STRING(&type_url_php, type_url, 1);
+  PHP_PROTO_ZVAL_STRING(&member, "type_url", 1);
+
+  PHP_PROTO_FAKE_SCOPE_RESTART(any_type);
+  message_handlers->write_property(getThis(), &member, &type_url_php,
+                                   NULL PHP_PROTO_TSRMLS_CC);
+  PHP_PROTO_FAKE_SCOPE_END;
+  FREE(type_url);
+}
+
+PHP_METHOD(Any, is) {
+  zend_class_entry *klass = NULL;
+
+  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "C", &klass) ==
+      FAILURE) {
+    return;
+  }
+
+  PHP_PROTO_HASHTABLE_VALUE desc_php = get_ce_obj(klass);
+  if (desc_php == NULL) {
+    RETURN_BOOL(false);
+  }
+
+  // Create corresponded type url.
+  Descriptor* desc =
+      UNBOX_HASHTABLE_VALUE(Descriptor, get_ce_obj(klass));
+  const char* fully_qualified_name = upb_msgdef_fullname(desc->msgdef);
+  size_t type_url_len =
+      strlen(TYPE_URL_PREFIX) + strlen(fully_qualified_name) + 1;
+  char* type_url = ALLOC_N(char, type_url_len);
+  sprintf(type_url, "%s%s", TYPE_URL_PREFIX, fully_qualified_name);
+
+  // Fetch stored type url.
+  zval member;
+  PHP_PROTO_ZVAL_STRING(&member, "type_url", 1);
+  PHP_PROTO_FAKE_SCOPE_BEGIN(any_type);
+  zval* value =
+      php_proto_message_read_property(getThis(), &member PHP_PROTO_TSRMLS_CC);
+  PHP_PROTO_FAKE_SCOPE_END;
+
+  // Compare two type url.
+  bool is = strcmp(type_url, Z_STRVAL_P(value)) == 0;
+  FREE(type_url);
+
+  RETURN_BOOL(is);
 }

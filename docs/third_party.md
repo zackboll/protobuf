@@ -32,6 +32,7 @@ These are projects we know about implementing Protocol Buffers for other program
 * Delphi: http://sourceforge.net/projects/protobuf-delphi/
 * Delphi: http://fundementals.sourceforge.net/dl.html
 * Elixir: https://github.com/jeremyong/exprotoc
+* Elixir: https://github.com/tony612/protobuf-elixir
 * Elm: https://github.com/tiziano88/elm-protobuf
 * Erlang: http://github.com/ngerakines/erlang_protobuffs/tree/master
 * Erlang: http://piqi.org/
@@ -116,6 +117,8 @@ GRPC (http://www.grpc.io/) is Google's RPC implementation for Protocol Buffers. 
 * https://github.com/thesamet/rpcz (C++/Python, based on ZeroMQ)
 * https://github.com/w359405949/libmaid (C++, Python)
 * https://github.com/madwyn/libpbrpc (C++)
+* https://github.com/SeriousMa/grpc-protobuf-validation (Java)
+* https://github.com/tony612/grpc-elixir (Elixir)
 
 ## Other Utilities
 
@@ -140,7 +143,7 @@ There are miscellaneous other things you may find useful as a Protocol Buffers d
     * http://igor-petruk.github.com/protobuf-maven-plugin/
     * http://code.google.com/p/maven-protoc-plugin/
     * https://github.com/os72/protoc-jar-maven-plugin
-* [Documentation generator plugin (Markdown/HTML/DocBook/...)](https://github.com/estan/protoc-gen-doc)
+* [Documentation generator plugin (Markdown/HTML/DocBook/...)](https://github.com/pseudomuto/protoc-gen-doc)
 * [DocBook generator for .proto files](http://code.google.com/p/protoc-gen-docbook/)
 * [Protobuf for nginx module](https://github.com/dbcode/protobuf-nginx/)
 * [RSpec matchers and Cucumber step defs for testing Protocol Buffers](https://github.com/connamara/protobuf_spec)
@@ -155,3 +158,4 @@ There are miscellaneous other things you may find useful as a Protocol Buffers d
 * [Linter for .proto files](https://github.com/ckaznocha/protoc-gen-lint)
 * [Protocol Buffers Dynamic Schema - create protobuf schemas programmatically (Java)] (https://github.com/os72/protobuf-dynamic)
 * [Make protoc plugins in NodeJS](https://github.com/konsumer/node-protoc-plugin)
+* [ProfaneDB - A Protocol Buffers database](https://profanedb.gitlab.io)

@@ -46,6 +46,9 @@ static HashTable* upb_def_to_php_obj_map;
 // Global map from message/enum's php class entry to corresponding wrapper
 // Descriptor/EnumDescriptor instances.
 static HashTable* ce_to_php_obj_map;
+// Global map from message/enum's proto fully-qualified name to corresponding
+// wrapper Descriptor/EnumDescriptor instances.
+static HashTable* proto_to_php_obj_map;
 
 // -----------------------------------------------------------------------------
 // Global maps.
@@ -55,15 +58,14 @@ static void add_to_table(HashTable* t, const void* def, void* value) {
   uint nIndex = (ulong)def & t->nTableMask;
 
   zval* pDest = NULL;
-  php_proto_zend_hash_index_update(t, (zend_ulong)def, &value, sizeof(zval*),
-                                   (void**)&pDest);
+  php_proto_zend_hash_index_update_mem(t, (zend_ulong)def, &value,
+                                       sizeof(zval*), (void**)&pDest);
 }
 
 static void* get_from_table(const HashTable* t, const void* def) {
   void** value;
-  if (php_proto_zend_hash_index_find(t, (zend_ulong)def, (void**)&value) ==
+  if (php_proto_zend_hash_index_find_mem(t, (zend_ulong)def, (void**)&value) ==
       FAILURE) {
-    zend_error(E_ERROR, "PHP object not found for given definition.\n");
     return NULL;
   }
   return *value;
@@ -71,14 +73,30 @@ static void* get_from_table(const HashTable* t, const void* def) {
 
 static bool exist_in_table(const HashTable* t, const void* def) {
   void** value;
-  return (php_proto_zend_hash_index_find(t, (zend_ulong)def, (void**)&value) ==
-          SUCCESS);
+  return (php_proto_zend_hash_index_find_mem(t, (zend_ulong)def,
+                                             (void**)&value) == SUCCESS);
 }
 
 static void add_to_list(HashTable* t, void* value) {
   zval* pDest = NULL;
-  php_proto_zend_hash_next_index_insert(t, &value, sizeof(void*),
+  php_proto_zend_hash_next_index_insert_mem(t, &value, sizeof(void*),
                                         (void**)&pDest);
+}
+
+static void add_to_strtable(HashTable* t, const char* key, int key_size,
+                            void* value) {
+  zval* pDest = NULL;
+  php_proto_zend_hash_update_mem(t, key, key_size, &value, sizeof(void*),
+                                 (void**)&pDest);
+}
+
+static void* get_from_strtable(const HashTable* t, const char* key, int key_size) {
+  void** value;
+  if (php_proto_zend_hash_find_mem(t, key, key_size, (void**)&value) ==
+      FAILURE) {
+    return NULL;
+  }
+  return *value;
 }
 
 void add_def_obj(const void* def, PHP_PROTO_HASHTABLE_VALUE value) {
@@ -109,6 +127,20 @@ PHP_PROTO_HASHTABLE_VALUE get_ce_obj(const void* ce) {
 
 bool class_added(const void* ce) {
   return exist_in_table(ce_to_php_obj_map, ce);
+}
+
+void add_proto_obj(const char* proto, PHP_PROTO_HASHTABLE_VALUE value) {
+#if PHP_MAJOR_VERSION < 7
+  Z_ADDREF_P(value);
+#else
+  ++GC_REFCOUNT(value);
+#endif
+  add_to_strtable(proto_to_php_obj_map, proto, strlen(proto), value);
+}
+
+PHP_PROTO_HASHTABLE_VALUE get_proto_obj(const char* proto) {
+  return (PHP_PROTO_HASHTABLE_VALUE)get_from_strtable(proto_to_php_obj_map,
+                                                      proto, strlen(proto));
 }
 
 // -----------------------------------------------------------------------------
@@ -164,8 +196,12 @@ static PHP_RINIT_FUNCTION(protobuf) {
   ALLOC_HASHTABLE(ce_to_php_obj_map);
   zend_hash_init(ce_to_php_obj_map, 16, NULL, HASHTABLE_VALUE_DTOR, 0);
 
+  ALLOC_HASHTABLE(proto_to_php_obj_map);
+  zend_hash_init(proto_to_php_obj_map, 16, NULL, HASHTABLE_VALUE_DTOR, 0);
+
   generated_pool = NULL;
   generated_pool_php = NULL;
+  internal_generated_pool_php = NULL;
 
   return 0;
 }
@@ -177,10 +213,28 @@ static PHP_RSHUTDOWN_FUNCTION(protobuf) {
   zend_hash_destroy(ce_to_php_obj_map);
   FREE_HASHTABLE(ce_to_php_obj_map);
 
+  zend_hash_destroy(proto_to_php_obj_map);
+  FREE_HASHTABLE(proto_to_php_obj_map);
+
 #if PHP_MAJOR_VERSION < 7
   if (generated_pool_php != NULL) {
     zval_dtor(generated_pool_php);
     FREE_ZVAL(generated_pool_php);
+  }
+  if (internal_generated_pool_php != NULL) {
+    zval_dtor(internal_generated_pool_php);
+    FREE_ZVAL(internal_generated_pool_php);
+  }
+#else
+  if (generated_pool_php != NULL) {
+    zval tmp;
+    ZVAL_OBJ(&tmp, generated_pool_php);
+    zval_dtor(&tmp);
+  }
+  if (internal_generated_pool_php != NULL) {
+    zval tmp;
+    ZVAL_OBJ(&tmp, internal_generated_pool_php);
+    zval_dtor(&tmp);
   }
 #endif
 
@@ -188,15 +242,21 @@ static PHP_RSHUTDOWN_FUNCTION(protobuf) {
 }
 
 static PHP_MINIT_FUNCTION(protobuf) {
-  map_field_init(TSRMLS_C);
-  repeated_field_init(TSRMLS_C);
-  repeated_field_iter_init(TSRMLS_C);
-  gpb_type_init(TSRMLS_C);
-  message_init(TSRMLS_C);
   descriptor_pool_init(TSRMLS_C);
   descriptor_init(TSRMLS_C);
   enum_descriptor_init(TSRMLS_C);
+  enum_value_descriptor_init(TSRMLS_C);
+  field_descriptor_init(TSRMLS_C);
+  gpb_type_init(TSRMLS_C);
+  internal_descriptor_pool_init(TSRMLS_C);
+  map_field_init(TSRMLS_C);
+  map_field_iter_init(TSRMLS_C);
+  message_init(TSRMLS_C);
+  oneof_descriptor_init(TSRMLS_C);
+  repeated_field_init(TSRMLS_C);
+  repeated_field_iter_init(TSRMLS_C);
   util_init(TSRMLS_C);
+  any_init(TSRMLS_C);
 
   return 0;
 }
@@ -206,6 +266,7 @@ static PHP_MSHUTDOWN_FUNCTION(protobuf) {
   PEFREE(repeated_field_handlers);
   PEFREE(repeated_field_iter_handlers);
   PEFREE(map_field_handlers);
+  PEFREE(map_field_iter_handlers);
 
   return 0;
 }
