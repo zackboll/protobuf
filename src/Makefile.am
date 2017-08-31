@@ -158,7 +158,6 @@ nobase_include_HEADERS =                                         \
   google/protobuf/compiler/parser.h                              \
   google/protobuf/compiler/plugin.h                              \
   google/protobuf/compiler/plugin.pb.h                           \
-  google/protobuf/compiler/profile.pb.h                          \
   google/protobuf/compiler/ada/ada_generator.h                   \
   google/protobuf/compiler/cpp/cpp_generator.h                   \
   google/protobuf/compiler/csharp/csharp_generator.h             \
@@ -333,7 +332,6 @@ libprotoc_la_SOURCES =                                         \
   google/protobuf/compiler/command_line_interface.cc           \
   google/protobuf/compiler/plugin.cc                           \
   google/protobuf/compiler/plugin.pb.cc                        \
-  google/protobuf/compiler/profile.pb.cc                       \
   google/protobuf/compiler/subprocess.cc                       \
   google/protobuf/compiler/subprocess.h                        \
   google/protobuf/compiler/zip_writer.cc                       \

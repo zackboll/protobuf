@@ -138,9 +138,14 @@ string SafeFunctionName(const Descriptor* descriptor,
                         const FieldDescriptor* field,
                         const string& prefix);
 
-// Returns true if unknown fields are preseved after parsing.
-inline bool PreserveUnknownFields(const Descriptor* message) {
-  return google::protobuf::compiler::cpp::PreserveUnknownFields (message);
+// Returns true if unknown fields are always preserved after parsing.
+inline bool AlwaysPreserveUnknownFields(const FileDescriptor* file) {
+  return google::protobuf::compiler::cpp::AlwaysPreserveUnknownFields (file);
+}
+
+// Returns true if unknown fields are always preseved after parsing.
+inline bool AlwaysPreserveUnknownFields(const Descriptor* message) {
+  return google::protobuf::compiler::cpp::AlwaysPreserveUnknownFields (message);
 }
 
 // Returns the optimize mode for <file>, respecting <options.enforce_lite>.
